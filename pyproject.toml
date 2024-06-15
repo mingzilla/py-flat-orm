@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "py-flat-orm"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+    { name = "ming.huang", email = "means789@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "pydash",
+    "mypy",
+    "pylint",
+    "flake8",
+    "black",
+    "pandas",
+    "sqlalchemy",
+    "pymysql",
+]
+
+[project.urls]
+Documentation = "https://github.com/ming.huang/py-flat-orm#readme"
+Issues = "https://github.com/ming.huang/py-flat-orm/issues"
+Source = "https://github.com/ming.huang/py-flat-orm"
+
+[tool.hatch.version]
+path = "src/py_flat_orm/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+    "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/py_flat_orm tests}"
+
+[tool.coverage.run]
+source_pkgs = ["py_flat_orm", "tests"]
+branch = true
+parallel = true
+omit = [
+    "src/py_flat_orm/__about__.py",
+]
+
+[tool.coverage.paths]
+py_flat_orm = ["src/py_flat_orm", "*/py-flat-orm/src/py_flat_orm"]
+tests = ["tests", "*/py-flat-orm/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
