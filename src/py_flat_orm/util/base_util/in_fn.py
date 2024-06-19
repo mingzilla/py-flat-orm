@@ -106,8 +106,8 @@ class InFn:
         return InFn.is_integer(obj)
 
     @staticmethod
-    def is_null(v: Any) -> bool:
-        return v is None or str(v).strip().lower() == 'null'
+    def is_none(v: Any) -> bool:
+        return v is None
 
     @staticmethod
     def is_number(value: Any) -> bool:
@@ -207,34 +207,23 @@ class InFn:
         return getattr(o, name, None)
 
     @staticmethod
-    def set_primitive_field(obj: Any, k: str, v: Any) -> Any:
-        if obj is None or k is None:
+    def set_primitive_field(obj: Any, field_name: str, value: Any) -> Any:
+        if obj is None or field_name is None:
             return obj
-        type_ = getattr(obj, k).__class__
-        is_null = InFn.is_null(v)
 
         try:
-            if type_ == int and not is_null and InFn.is_integer(v):
-                setattr(obj, k, InFn.as_integer(v))
-            elif type_ == float and not is_null and InFn.is_double(v):
-                setattr(obj, k, InFn.as_double(v))
-            elif type_ == bool and not is_null and InFn.is_boolean(v):
-                setattr(obj, k, InFn.as_boolean(v))
-            else:
-                if type_ == int:
-                    setattr(obj, k, InFn.as_integer(v) if not is_null else None)
-                elif type_ == float:
-                    setattr(obj, k, InFn.as_double(v) if not is_null else None)
-                elif type_ == Decimal:
-                    setattr(obj, k, InFn.as_big_decimal(v) if not is_null else None)
-                elif type_ == bool:
-                    setattr(obj, k, InFn.as_boolean(v) if not is_null else None)
-                elif type_ == str:
-                    setattr(obj, k, str(v) if not is_null else None)
-                elif type_ == type(None):
-                    setattr(obj, k, v if not is_null else None)
+            if isinstance(value, int):
+                setattr(obj, field_name, int(value))
+            elif isinstance(value, float):
+                setattr(obj, field_name, float(value))
+            elif isinstance(value, bool):
+                setattr(obj, field_name, bool(value))
+            elif isinstance(value, str):
+                setattr(obj, field_name, str(value))
+            elif InFn.has_field(field_name, obj):
+                setattr(obj, field_name, value)
         except AttributeError:
-            pass  # Ignoring read-only properties
+            pass  # Field does not exist
 
         return obj
 

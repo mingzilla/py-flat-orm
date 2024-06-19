@@ -1,6 +1,7 @@
 """TestInFn"""
 
 import unittest
+from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
 from example.my_person import MyPerson
@@ -86,9 +87,8 @@ class TestInFn(unittest.TestCase):
         self.assertFalse(InFn.is_long('123.456'))
 
     def test_is_null(self):
-        self.assertTrue(InFn.is_null(None))
-        self.assertTrue(InFn.is_null('null'))
-        self.assertFalse(InFn.is_null('123'))
+        self.assertTrue(InFn.is_none(None))
+        self.assertFalse(InFn.is_none('123'))
 
     def test_is_number(self):
         self.assertTrue(InFn.is_number('123'))
@@ -194,25 +194,27 @@ class TestInFn(unittest.TestCase):
         self.assertEqual(InFn.prop('key', {'key': 'value'}), 'value')
         self.assertIsNone(InFn.prop('key', {}))
 
+    class Person:
+        age = 0
+        height = 0.0 # `height: float` does not make it a float field, the only way for python to know the type is by forcing a value into a field
+        is_active = False
+        dob = date(2023, 6, 19)
+
     def test_set_primitive_field(self):
-        class DummyClass:
-            int_field: int
-            float_field: float
-            bool_field: bool
-            str_field: str
+        obj = TestInFn.Person()
 
-        obj = DummyClass()
-        InFn.set_primitive_field(obj, 'int_field', 123)
-        self.assertEqual(obj.int_field, 123)
+        # Set primitive fields using InFn.set_primitive_field
+        InFn.set_primitive_field(obj, "age", 25)
+        InFn.set_primitive_field(obj, "height", 1.75)
+        InFn.set_primitive_field(obj, "is_active", True)
+        InFn.set_primitive_field(obj, "hi", True)
+        InFn.set_primitive_field(obj, "dob", date(2024, 6, 19))
 
-        InFn.set_primitive_field(obj, 'float_field', 123.456)
-        self.assertEqual(obj.float_field, 123.456)
-
-        InFn.set_primitive_field(obj, 'bool_field', 'true')
-        self.assertEqual(obj.bool_field, True)
-
-        InFn.set_primitive_field(obj, 'str_field', 'test')
-        self.assertEqual(obj.str_field, 'test')
+        # Assert the fields are set correctly
+        self.assertEqual(obj.age, 25)
+        self.assertEqual(obj.height, 1.75)
+        self.assertTrue(obj.is_active)
+        self.assertEqual(obj.dob, date(2024, 6, 19))
 
     def test_spaced_to_lower_snake_case(self):
         self.assertEqual(InFn.spaced_to_lower_snake_case('test case'), 'test_case')
