@@ -4,8 +4,6 @@ build-backend = "hatchling.build"
 
 [project]
 name = "py-flat-orm"
-dynamic = ["version"]
-description = ''
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
@@ -24,7 +22,15 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+# Non-generated definition
+version = "0.1.0"
+description = "A sample project for ORM"
+
+# Non-generated section
+[tool.hatch.envs.py-flat-orm]
+path = ".venv"
 dependencies = [
+    "numpy>=1.21.0",
     "pydash",
     "mypy",
     "pylint",
