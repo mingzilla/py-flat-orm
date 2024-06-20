@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class TestEnum(Enum):
+class MyEnum(Enum):
     ONE = ('ONE', '1')
     TWO = ('TWO', '2')
     THREE = ('THREE', '3')

@@ -1,3 +1,3 @@
 hatch env remove
 hatch env create
-hatch shell
+hatch shell py-flat-orm

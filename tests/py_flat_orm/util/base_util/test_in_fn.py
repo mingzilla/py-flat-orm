@@ -4,9 +4,9 @@ import unittest
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
-from example.my_person import MyPerson
-from example.test_enum import TestEnum
 from py_flat_orm.util.base_util.in_fn import InFn
+from test_data.domain.my_enum import MyEnum
+from test_data.domain.my_person import MyPerson
 
 
 class TestInFn(unittest.TestCase):
@@ -97,7 +97,7 @@ class TestInFn(unittest.TestCase):
 
     def test_get_enum_keys(self):
         expected_keys = ['ONE', 'TWO', 'THREE']
-        result = InFn.get_enum_keys(TestEnum)
+        result = InFn.get_enum_keys(MyEnum)
         self.assertListEqual(sorted(result), sorted(expected_keys))
 
     def test_get_keys(self):

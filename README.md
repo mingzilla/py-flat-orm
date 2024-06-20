@@ -22,14 +22,20 @@ This project is set up using `hatch`.
 * Run `xi_init.ps1` or `xi_init.sh` for configuration
 * to other `.ps1` or `.sh` files for relevant tasks
 * `x1` means execution, and generally the 1st thing to run
+* run `hatch -h` 
 
 ## Project Creation
 
-This project is
-* generated using `hatch new py-flat-orm`
+### Initialisation
+* This project is generated using `hatch new py-flat-orm`
 * `pyproject.toml` is then edited to include `[tool.hatch.envs.py-flat-orm]` etc.
 * script files e.g. `x*.ps1` are added 
 * set up with git 
+
+### Tests
+* use `./test_data` directory put test data
+  * test data cannot be put into `./tests`, otherwise when running `hatch test`, it treats them as tests to execute
+  * you can pattern exclude these files but that requires more project config
 
 ## License
 
