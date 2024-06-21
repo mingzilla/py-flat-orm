@@ -39,6 +39,10 @@ This project is set up using `hatch`.
   * test data cannot be put into `./tests`, otherwise when running `hatch test`, it treats them as tests to execute
   * you can pattern exclude these files but that requires more project config
 
+### Publish
+* `hatch build`
+* `hatch publish` - ask chatGPT how to set up a PyPI Account
+
 ## License
 
 `py-flat-orm` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
