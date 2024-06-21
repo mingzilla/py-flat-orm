@@ -62,14 +62,11 @@ class TestInFn(unittest.TestCase):
         self.assertTrue(InFn.is_decimal('123.456'))
         self.assertFalse(InFn.is_decimal('not a number'))
 
-    def test_is_big_integer(self):
-        self.assertTrue(InFn.is_big_integer('123456'))
-        self.assertFalse(InFn.is_big_integer('123.456'))
-
     def test_is_boolean(self):
         self.assertTrue(InFn.is_boolean('true'))
         self.assertTrue(InFn.is_boolean('false'))
         self.assertFalse(InFn.is_boolean('maybe'))
+        self.assertFalse(InFn.is_boolean(None))
 
     def test_is_double(self):
         self.assertTrue(InFn.is_double('123.456'))
@@ -82,10 +79,6 @@ class TestInFn(unittest.TestCase):
     def test_is_integer(self):
         self.assertTrue(InFn.is_integer('123'))
         self.assertFalse(InFn.is_integer('123.456'))
-
-    def test_is_long(self):
-        self.assertTrue(InFn.is_long('123'))
-        self.assertFalse(InFn.is_long('123.456'))
 
     def test_is_null(self):
         self.assertTrue(InFn.is_none(None))
@@ -110,13 +103,13 @@ class TestInFn(unittest.TestCase):
         self.assertEqual(InFn.get_keys(DummyClass()), ['field1', 'field2'])
 
     def test_get_type(self):
-        self.assertEqual(InFn.get_type(MyPerson, "id"), int | None)
-        self.assertEqual(InFn.get_type(MyPerson, "age"), int)
-        self.assertEqual(InFn.get_type(MyPerson, "name"), str)
-        self.assertEqual(InFn.get_type(MyPerson, "is_male"), bool)
-        self.assertEqual(InFn.get_type(MyPerson, "is_single"), bool | None)
-        self.assertEqual(InFn.get_type(MyPerson, "long_v"), int)
-        self.assertEqual(InFn.get_type(MyPerson, "long_v2"), int | None)
+        self.assertEqual(InFn.get_static_field_type(MyPerson, "id"), int | None)
+        self.assertEqual(InFn.get_static_field_type(MyPerson, "age"), int)
+        self.assertEqual(InFn.get_static_field_type(MyPerson, "name"), str)
+        self.assertEqual(InFn.get_static_field_type(MyPerson, "is_male"), bool)
+        self.assertEqual(InFn.get_static_field_type(MyPerson, "is_single"), bool | None)
+        self.assertEqual(InFn.get_static_field_type(MyPerson, "long_v"), int)
+        self.assertEqual(InFn.get_static_field_type(MyPerson, "long_v2"), int | None)
 
     # Optional: Use subTest for parameterized tests
     def test_get_type_parametrized(self):
@@ -132,7 +125,7 @@ class TestInFn(unittest.TestCase):
 
         for field_name, expected_type in parameters:
             with self.subTest(field_name=field_name):
-                self.assertEqual(InFn.get_type(MyPerson, field_name), expected_type)
+                self.assertEqual(InFn.get_static_field_type(MyPerson, field_name), expected_type)
 
     def test_camel_to_upper_snake_case(self):
         self.assertEqual(InFn.camel_to_upper_snake_case('camelCaseText'), 'CAMEL_CASE_TEXT')
@@ -189,45 +182,23 @@ class TestInFn(unittest.TestCase):
                 self.field2 = 'value2'
 
         expected_map = {'field1': 'value1', 'field2': 'value2'}
-        self.assertEqual(InFn.to_map(DummyClass()), expected_map)
+        self.assertEqual(InFn.to_dict(DummyClass()), expected_map)
 
     def test_prop(self):
         self.assertEqual(InFn.prop('key', {'key': 'value'}), 'value')
         self.assertIsNone(InFn.prop('key', {}))
 
-    class Person:
-        age = 0
-        height = 0.0  # `height: float` does not make it a float field, the only way for python to know the type is by forcing a value into a field
-        is_active = False
-        dob = date(2023, 6, 19)
-
     def test_set_primitive_field(self):
-        obj = TestInFn.Person()
-
-        # Set primitive fields using InFn.set_primitive_field
-        InFn.set_primitive_field(obj, "age", 25)
-        InFn.set_primitive_field(obj, "height", 1.75)
-        InFn.set_primitive_field(obj, "is_active", True)
-        InFn.set_primitive_field(obj, "hi", True)
-        InFn.set_primitive_field(obj, "dob", date(2024, 6, 19))
-
-        # Assert the fields are set correctly
-        self.assertEqual(obj.age, 25)
-        self.assertEqual(obj.height, 1.75)
-        self.assertTrue(obj.is_active)
-        self.assertEqual(obj.dob, date(2024, 6, 19))
-
-    def test_set_field(self):
         obj = AllCommonTypesObj()
 
         # Set primitive fields using InFn.set_primitive_field
-        InFn.set_field(obj, "int_field", 25.2)
-        InFn.set_field(obj, "float_field", 1.75)
-        InFn.set_field(obj, "bool_field", True)
-        InFn.set_field(obj, "str_field", True)
-        InFn.set_field(obj, "date_field", date(2024, 6, 19))
-        InFn.set_field(obj, "time_field", date(2024, 6, 19))
-        InFn.set_field(obj, "datetime_field", date(2024, 6, 19))
+        InFn.set_primitive_field(obj, "int_field", 25.2)
+        InFn.set_primitive_field(obj, "float_field", 1.75)
+        InFn.set_primitive_field(obj, "bool_field", True)
+        InFn.set_primitive_field(obj, "str_field", True)
+        InFn.set_primitive_field(obj, "date_field", date(2024, 6, 19))
+        InFn.set_primitive_field(obj, "time_field", date(2024, 6, 19))
+        InFn.set_primitive_field(obj, "datetime_field", date(2024, 6, 19))
 
         # Assert the fields are set correctly
         self.assertEqual(obj.int_field, 25)
@@ -238,17 +209,17 @@ class TestInFn(unittest.TestCase):
         self.assertEqual(obj.time_field, time(0, 0, 0))
         self.assertEqual(obj.datetime_field, datetime(2024, 6, 19, 0, 0, 0))
 
-    def test_set_field_and_set_to_none(self):
+    def test_set_primitive_field_and_set_to_none(self):
         obj = AllCommonTypesObj()
 
         # Set primitive fields using InFn.set_primitive_field
-        InFn.set_field(obj, "int_field", None)
-        InFn.set_field(obj, "float_field", None)
-        InFn.set_field(obj, "bool_field", None)
-        InFn.set_field(obj, "str_field", None)
-        InFn.set_field(obj, "date_field", None)
-        InFn.set_field(obj, "time_field", None)
-        InFn.set_field(obj, "datetime_field", None)
+        InFn.set_primitive_field(obj, "int_field", None)
+        InFn.set_primitive_field(obj, "float_field", None)
+        InFn.set_primitive_field(obj, "bool_field", None)
+        InFn.set_primitive_field(obj, "str_field", None)
+        InFn.set_primitive_field(obj, "date_field", None)
+        InFn.set_primitive_field(obj, "time_field", None)
+        InFn.set_primitive_field(obj, "datetime_field", None)
 
         # Assert the fields are set correctly
         self.assertEqual(obj.int_field, None)

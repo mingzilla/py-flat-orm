@@ -1,4 +1,4 @@
-# Python does not make a field int by doing e.g. `age: int`
+# Python does not make a field int by doing e.g. `age: int`. Without assignment, the field is not even present
 # The only reliable way to make a field int is by setting a value to it
 # This allows type checking, e.g.
 # if age is 0, isinstance(person.age, int) returns True

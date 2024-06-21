@@ -82,12 +82,9 @@ class InFn:
         return InFn.as_decimal(obj) is not None
 
     @staticmethod
-    def is_big_integer(obj: Any) -> bool:
-        return InFn.is_integer(obj)
-
-    @staticmethod
     def is_boolean(obj: Any) -> bool:
         val = InFn.as_string(obj)
+        if val is None: return False
         return val.lower() in ['true', 'false']
 
     @staticmethod
@@ -101,10 +98,6 @@ class InFn:
     @staticmethod
     def is_integer(obj: Any) -> bool:
         return InFn.as_integer(obj) is not None
-
-    @staticmethod
-    def is_long(obj: Any) -> bool:
-        return InFn.is_integer(obj)
 
     @staticmethod
     def is_none(v: Any) -> bool:
@@ -133,7 +126,7 @@ class InFn:
         return [k for k in props.keys() if k != 'class']
 
     @staticmethod
-    def get_type(clazz: Type[Any], field: str) -> Type[Any] | None:
+    def get_static_field_type(clazz: Type[Any], field: str) -> Type[Any] | None:
         try:
             return clazz.__annotations__[field]
         except KeyError:
@@ -188,7 +181,7 @@ class InFn:
         return x
 
     @staticmethod
-    def to_map(o: Any, custom_exclude_fields: Optional[List[str]] = None) -> dict:
+    def to_dict(o: Any, custom_exclude_fields: Optional[List[str]] = None) -> dict:
         exclude_fields = custom_exclude_fields or []
         keys = InFn.get_keys(o) if o else []
 
@@ -206,27 +199,6 @@ class InFn:
         if isinstance(o, dict):
             return o.get(name)
         return getattr(o, name, None)
-
-    @staticmethod
-    def set_primitive_field(obj: Any, field_name: str, value: Any) -> Any:
-        if obj is None or field_name is None:
-            return obj
-
-        try:
-            if isinstance(value, int):
-                setattr(obj, field_name, int(value))
-            elif isinstance(value, float):
-                setattr(obj, field_name, float(value))
-            elif isinstance(value, bool):
-                setattr(obj, field_name, bool(value))
-            elif isinstance(value, str):
-                setattr(obj, field_name, str(value))
-            elif InFn.has_field(field_name, obj):
-                setattr(obj, field_name, value)
-        except AttributeError:
-            pass  # Field does not exist
-
-        return obj
 
     @staticmethod
     def to_date(value: Any) -> date:
@@ -265,7 +237,7 @@ class InFn:
             raise TypeError("Unsupported type. Expected date, time, or datetime object.")
 
     @staticmethod
-    def set_field(obj: Any, field_name: str, value: Any) -> Any:
+    def set_primitive_field(obj: Any, field_name: str, value: Any) -> Any:
         if obj is None or field_name is None:
             return obj
 
@@ -283,15 +255,15 @@ class InFn:
 
             if isinstance(val_to_check, int):
                 setattr(obj, field_name, int(value))
-            elif isinstance(val_to_check, float):
+            elif isinstance(val_to_check, float):  # after int check: int is float, float is not int
                 setattr(obj, field_name, float(value))
             elif isinstance(val_to_check, bool):
                 setattr(obj, field_name, bool(value))
             elif isinstance(val_to_check, str):
                 setattr(obj, field_name, str(value))
-            elif isinstance(val_to_check, datetime):  # need to be before date, as datetime is date, date is not datetime
+            elif isinstance(val_to_check, datetime):
                 setattr(obj, field_name, InFn.to_datetime(value))
-            elif isinstance(val_to_check, date):
+            elif isinstance(val_to_check, date):  # after datetime check: datetime is date, date is not datetime
                 setattr(obj, field_name, InFn.to_date(value))
             elif isinstance(val_to_check, time):
                 setattr(obj, field_name, InFn.to_time(value))
