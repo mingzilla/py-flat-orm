@@ -272,6 +272,10 @@ class InFn:
         if not InFn.has_field(field_name, obj):
             return obj
 
+        if value is None:
+            setattr(obj, field_name, None)
+            return obj
+
         try:
             obj_fields = type(obj)()
 

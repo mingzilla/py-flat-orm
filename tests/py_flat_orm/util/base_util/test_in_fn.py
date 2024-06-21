@@ -197,7 +197,7 @@ class TestInFn(unittest.TestCase):
 
     class Person:
         age = 0
-        height = 0.0 # `height: float` does not make it a float field, the only way for python to know the type is by forcing a value into a field
+        height = 0.0  # `height: float` does not make it a float field, the only way for python to know the type is by forcing a value into a field
         is_active = False
         dob = date(2023, 6, 19)
 
@@ -237,6 +237,27 @@ class TestInFn(unittest.TestCase):
         self.assertEqual(obj.date_field, date(2024, 6, 19))
         self.assertEqual(obj.time_field, time(0, 0, 0))
         self.assertEqual(obj.datetime_field, datetime(2024, 6, 19, 0, 0, 0))
+
+    def test_set_field_and_set_to_none(self):
+        obj = AllCommonTypesObj()
+
+        # Set primitive fields using InFn.set_primitive_field
+        InFn.set_field(obj, "int_field", None)
+        InFn.set_field(obj, "float_field", None)
+        InFn.set_field(obj, "bool_field", None)
+        InFn.set_field(obj, "str_field", None)
+        InFn.set_field(obj, "date_field", None)
+        InFn.set_field(obj, "time_field", None)
+        InFn.set_field(obj, "datetime_field", None)
+
+        # Assert the fields are set correctly
+        self.assertEqual(obj.int_field, None)
+        self.assertEqual(obj.float_field, None)
+        self.assertEqual(obj.bool_field, None)
+        self.assertEqual(obj.str_field, None)
+        self.assertEqual(obj.date_field, None)
+        self.assertEqual(obj.time_field, None)
+        self.assertEqual(obj.datetime_field, None)
 
     def test_spaced_to_lower_snake_case(self):
         self.assertEqual(InFn.spaced_to_lower_snake_case('test case'), 'test_case')
