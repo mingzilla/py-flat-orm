@@ -19,7 +19,8 @@ pip install py-flat-orm
 ## Get Started
 
 This project is set up using `hatch`. 
-* Run `xi_init.ps1` or `xi_init.sh` for configuration
+* Run `xi_init.ps1` or `xi_init.sh` to apply `pyproject.toml`
+  - run `exit` (deactivate env) first if you get `Cannot remove active environment: py-flat-orm`  
 * to other `.ps1` or `.sh` files for relevant tasks
 * `x1` means execution, and generally the 1st thing to run
 * run `hatch -h` 
@@ -31,6 +32,7 @@ This project is set up using `hatch`.
 * `pyproject.toml` is then edited to include `[tool.hatch.envs.py-flat-orm]` etc.
 * script files e.g. `x*.ps1` are added 
 * set up with git 
+* Run e.g. `xi_init.ps1` to apply `pyproject.toml`
 
 ### Tests
 * use `./test_data` directory put test data

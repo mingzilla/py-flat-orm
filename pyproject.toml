@@ -29,6 +29,7 @@ description = "A sample project for ORM"
 # Non-generated section
 [tool.hatch.envs.py-flat-orm]
 path = ".venv"
+paths = ["src"]
 dependencies = [
     "numpy>=1.21.0",
     "pydash",
