@@ -34,10 +34,18 @@ This project is set up using `hatch`.
 * set up with git 
 * Run e.g. `xi_init.ps1` to apply `pyproject.toml`
 
-### Tests
+### Tests Data
 * use `./test_data` directory put test data
   * test data cannot be put into `./tests`, otherwise when running `hatch test`, it treats them as tests to execute
   * you can pattern exclude these files but that requires more project config
+
+### Test in PyCharm
+* mark `tests` as Test Root, allows right-clicking directories inside to run tests
+
+### Typing
+* add dependency `mypy`
+* each package needs to add an empty `py.typed` file to make pycharm happy
+* so each package has `__init__.py` and `py.typed`, seems pointless, just live with them
 
 ### Publish
 * `hatch build`
