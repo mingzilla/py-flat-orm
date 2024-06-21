@@ -43,7 +43,7 @@ This project is set up using `hatch`.
 * mark `tests` as Test Root, allows right-clicking directories inside to run tests
 * run tests from root, and save test config as a file
 
-### Typing
+### Static Analysis
 * add dependency `mypy`
 * each package needs to add an empty `py.typed` file to make pycharm happy
 * so each package has `__init__.py` and `py.typed`, seems pointless, just live with them
