@@ -1,4 +1,3 @@
-"""in_fn"""
 import decimal
 import re
 from decimal import Decimal
@@ -14,7 +13,7 @@ class InFn:
         return InFn.as_string(obj).strip().lower() == 'true'
 
     @staticmethod
-    def as_big_decimal(obj: Any) -> Optional[Decimal]:
+    def as_decimal(obj: Any) -> Optional[Decimal]:
         string_val = str(obj).strip()
         try:
             return Decimal(string_val)
@@ -22,12 +21,12 @@ class InFn:
             return None
 
     @staticmethod
-    def as_big_decimal_with_scale(decimal_places: Any, mode: Any, obj: Any) -> Optional[Decimal]:
+    def as_decimal_with_scale(decimal_places: Any, mode: Any, obj: Any) -> Optional[Decimal]:
         decimals = InFn.as_integer(decimal_places)
-        big_decimal = InFn.as_big_decimal(obj)
-        if big_decimal is not None and decimals is not None:
-            return big_decimal.quantize(Decimal('1.' + '0' * decimals), rounding=mode)
-        return big_decimal
+        decimal = InFn.as_decimal(obj)
+        if decimal is not None and decimals is not None:
+            return decimal.quantize(Decimal('1.' + '0' * decimals), rounding=mode)
+        return decimal
 
     @staticmethod
     def as_double(obj: Any) -> Optional[float]:
@@ -77,8 +76,8 @@ class InFn:
         return hasattr(o, field_name)
 
     @staticmethod
-    def is_big_decimal(obj: Any) -> bool:
-        return InFn.as_big_decimal(obj) is not None
+    def is_decimal(obj: Any) -> bool:
+        return InFn.as_decimal(obj) is not None
 
     @staticmethod
     def is_big_integer(obj: Any) -> bool:
@@ -163,8 +162,8 @@ class InFn:
         return InFn.as_boolean(InFn.prop_as_string(name, obj))
 
     @staticmethod
-    def prop_as_big_decimal(name: str, obj: Any) -> Optional[Decimal]:
-        return InFn.as_big_decimal(InFn.prop_as_string(name, obj))
+    def prop_as_decimal(name: str, obj: Any) -> Optional[Decimal]:
+        return InFn.as_decimal(InFn.prop_as_string(name, obj))
 
     @staticmethod
     def prop_as_double(name: str, obj: Any) -> Optional[float]:

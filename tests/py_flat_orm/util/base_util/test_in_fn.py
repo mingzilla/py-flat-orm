@@ -18,16 +18,16 @@ class TestInFn(unittest.TestCase):
         self.assertFalse(InFn.as_boolean('false'))
         self.assertFalse(InFn.as_boolean('any other string'))
 
-    def test_as_big_decimal(self):
-        self.assertEqual(InFn.as_big_decimal('123.456'), Decimal('123.456'))
-        self.assertIsNone(InFn.as_big_decimal('not a number'))
+    def test_as_decimal(self):
+        self.assertEqual(InFn.as_decimal('123.456'), Decimal('123.456'))
+        self.assertIsNone(InFn.as_decimal('not a number'))
 
-    def test_as_big_decimal_with_scale(self):
+    def test_as_decimal_with_scale(self):
         self.assertEqual(
-            InFn.as_big_decimal_with_scale(2, ROUND_HALF_UP, '123.456'),
+            InFn.as_decimal_with_scale(2, ROUND_HALF_UP, '123.456'),
             Decimal('123.46')
         )
-        self.assertIsNone(InFn.as_big_decimal_with_scale(2, ROUND_HALF_UP, 'not a number'))
+        self.assertIsNone(InFn.as_decimal_with_scale(2, ROUND_HALF_UP, 'not a number'))
 
     def test_as_double(self):
         self.assertEqual(InFn.as_double('123.456'), 123.456)
@@ -57,9 +57,9 @@ class TestInFn(unittest.TestCase):
         self.assertTrue(InFn.has_field('key', {'key': 'value'}))
         self.assertFalse(InFn.has_field('key', {}))
 
-    def test_is_big_decimal(self):
-        self.assertTrue(InFn.is_big_decimal('123.456'))
-        self.assertFalse(InFn.is_big_decimal('not a number'))
+    def test_is_decimal(self):
+        self.assertTrue(InFn.is_decimal('123.456'))
+        self.assertFalse(InFn.is_decimal('not a number'))
 
     def test_is_big_integer(self):
         self.assertTrue(InFn.is_big_integer('123456'))
@@ -158,9 +158,9 @@ class TestInFn(unittest.TestCase):
         self.assertFalse(InFn.prop_as_boolean('key', {'key': 'false'}))
         self.assertIsNone(InFn.prop_as_boolean('key', {}))
 
-    def test_prop_as_big_decimal(self):
-        self.assertEqual(InFn.prop_as_big_decimal('key', {'key': '123.456'}), Decimal('123.456'))
-        self.assertIsNone(InFn.prop_as_big_decimal('key', {}))
+    def test_prop_as_decimal(self):
+        self.assertEqual(InFn.prop_as_decimal('key', {'key': '123.456'}), Decimal('123.456'))
+        self.assertIsNone(InFn.prop_as_decimal('key', {}))
 
     def test_prop_as_double(self):
         self.assertEqual(InFn.prop_as_double('key', {'key': '123.456'}), 123.456)
