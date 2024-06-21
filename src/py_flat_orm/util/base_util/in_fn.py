@@ -1,6 +1,7 @@
 """in_fn"""
 import decimal
 import re
+from datetime import date, time, datetime
 from decimal import Decimal
 from enum import Enum
 from typing import Any, List, Optional, Callable, Type
@@ -58,7 +59,7 @@ class InFn:
         return InFn.as_integer(obj)
 
     @staticmethod
-    def as_string(obj: Any) -> str:
+    def as_string(obj: Any) -> str | None:
         return str(obj) if obj is not None else None
 
     @staticmethod
@@ -223,6 +224,77 @@ class InFn:
             elif InFn.has_field(field_name, obj):
                 setattr(obj, field_name, value)
         except AttributeError:
+            pass  # Field does not exist
+
+        return obj
+
+    @staticmethod
+    def to_date(value: Any) -> date:
+        if isinstance(value, datetime):
+            return value.date()
+        elif isinstance(value, date):
+            return value
+        elif isinstance(value, time):
+            # Create a datetime object with the current date and given time
+            current_date = datetime.now().date()
+            dt = datetime.combine(current_date, value)
+            return dt.date()
+        else:
+            raise TypeError("Unsupported type. Expected date, time, or datetime object.")
+
+    @staticmethod
+    def to_time(value: Any) -> time:
+        if isinstance(value, datetime):
+            return value.time()
+        else:
+            raise TypeError("Unsupported type. Expected datetime object.")
+
+    @staticmethod
+    def to_datetime(value: Any) -> datetime:
+        if isinstance(value, datetime):
+            return value
+        elif isinstance(value, date):
+            # Combine date with default time (midnight)
+            return datetime.combine(value, datetime.min.time())
+        elif isinstance(value, time):
+            # Create a date object (current date)
+            current_date = datetime.now().date()
+            # Combine date and time to create datetime
+            return datetime.combine(current_date, value)
+        else:
+            raise TypeError("Unsupported type. Expected date, time, or datetime object.")
+
+    @staticmethod
+    def set_field(obj: Any, field_name: str, value: Any) -> Any:
+        if obj is None or field_name is None:
+            return obj
+
+        if not InFn.has_field(field_name, obj):
+            return obj
+
+        try:
+            obj_fields = type(obj)()
+
+            val_to_check = obj_fields.__dict__[field_name]
+
+            if isinstance(val_to_check, int):
+                setattr(obj, field_name, int(value))
+            elif isinstance(val_to_check, float):
+                setattr(obj, field_name, float(value))
+            elif isinstance(val_to_check, bool):
+                setattr(obj, field_name, bool(value))
+            elif isinstance(val_to_check, str):
+                setattr(obj, field_name, str(value))
+            elif isinstance(val_to_check, datetime):  # need to be before date, as datetime is date, date is not datetime
+                setattr(obj, field_name, InFn.to_datetime(value))
+            elif isinstance(val_to_check, date):
+                setattr(obj, field_name, InFn.to_date(value))
+            elif isinstance(val_to_check, time):
+                setattr(obj, field_name, InFn.to_time(value))
+            elif InFn.has_field(field_name, obj):
+                setattr(obj, field_name, value)
+
+        except TypeError:
             pass  # Field does not exist
 
         return obj

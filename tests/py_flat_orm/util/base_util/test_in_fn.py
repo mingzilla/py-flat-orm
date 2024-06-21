@@ -1,10 +1,11 @@
 """TestInFn"""
 
 import unittest
-from datetime import date
+from datetime import date, time, datetime
 from decimal import Decimal, ROUND_HALF_UP
 
 from py_flat_orm.util.base_util.in_fn import InFn
+from test_data.domain.all_common_types_obj import AllCommonTypesObj
 from test_data.domain.my_enum import MyEnum
 from test_data.domain.my_person import MyPerson
 
@@ -215,6 +216,27 @@ class TestInFn(unittest.TestCase):
         self.assertEqual(obj.height, 1.75)
         self.assertTrue(obj.is_active)
         self.assertEqual(obj.dob, date(2024, 6, 19))
+
+    def test_set_field(self):
+        obj = AllCommonTypesObj()
+
+        # Set primitive fields using InFn.set_primitive_field
+        InFn.set_field(obj, "int_field", 25.2)
+        InFn.set_field(obj, "float_field", 1.75)
+        InFn.set_field(obj, "bool_field", True)
+        InFn.set_field(obj, "str_field", True)
+        InFn.set_field(obj, "date_field", date(2024, 6, 19))
+        InFn.set_field(obj, "time_field", date(2024, 6, 19))
+        InFn.set_field(obj, "datetime_field", date(2024, 6, 19))
+
+        # Assert the fields are set correctly
+        self.assertEqual(obj.int_field, 25)
+        self.assertEqual(obj.float_field, 1.75)
+        self.assertEqual(obj.bool_field, True)
+        self.assertEqual(obj.str_field, "True")
+        self.assertEqual(obj.date_field, date(2024, 6, 19))
+        self.assertEqual(obj.time_field, time(0, 0, 0))
+        self.assertEqual(obj.datetime_field, datetime(2024, 6, 19, 0, 0, 0))
 
     def test_spaced_to_lower_snake_case(self):
         self.assertEqual(InFn.spaced_to_lower_snake_case('test case'), 'test_case')
