@@ -41,6 +41,7 @@ This project is set up using `hatch`.
 
 ### Test in PyCharm
 * mark `tests` as Test Root, allows right-clicking directories inside to run tests
+* run tests from root, and save test config as a file
 
 ### Typing
 * add dependency `mypy`
