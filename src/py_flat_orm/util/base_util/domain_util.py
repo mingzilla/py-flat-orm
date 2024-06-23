@@ -6,9 +6,6 @@ T = TypeVar('T')
 
 
 class DomainUtil:
-    """
-    @since 01/01/2024
-    """
 
     @staticmethod
     def merge_fields(obj: T, new_props: Dict[str, Any]) -> T:
