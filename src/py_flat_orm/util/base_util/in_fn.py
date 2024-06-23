@@ -78,6 +78,10 @@ class InFn:
         return hasattr(o, field_name)
 
     @staticmethod
+    def is_not_blank(value: str) -> bool:
+        return bool(value and value.strip())
+
+    @staticmethod
     def is_decimal(obj: Any) -> bool:
         return InFn.as_decimal(obj) is not None
 

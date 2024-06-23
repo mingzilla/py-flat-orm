@@ -58,6 +58,13 @@ class TestInFn(unittest.TestCase):
         self.assertTrue(InFn.has_field('key', {'key': 'value'}))
         self.assertFalse(InFn.has_field('key', {}))
 
+    def test_is_not_blank(self):
+        self.assertTrue(InFn.is_not_blank("test"))
+        self.assertTrue(InFn.is_not_blank(" test "))
+        self.assertFalse(InFn.is_not_blank(""))
+        self.assertFalse(InFn.is_not_blank("   "))
+        self.assertFalse(InFn.is_not_blank(None))
+
     def test_is_decimal(self):
         self.assertTrue(InFn.is_decimal('123.456'))
         self.assertFalse(InFn.is_decimal('not a number'))
