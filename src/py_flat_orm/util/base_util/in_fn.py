@@ -8,6 +8,11 @@ from typing import Any, List, Optional, Callable, Type
 
 
 class InFn:
+
+    @staticmethod
+    def as_string(obj: Any) -> str | None:
+        return str(obj) if obj is not None else None
+
     @staticmethod
     def as_boolean(obj: Any) -> Optional[bool]:
         if obj is None:
@@ -57,10 +62,6 @@ class InFn:
     @staticmethod
     def as_long(obj: Any) -> Optional[int]:
         return InFn.as_integer(obj)
-
-    @staticmethod
-    def as_string(obj: Any) -> str | None:
-        return str(obj) if obj is not None else None
 
     @staticmethod
     def safe_get(default_value: Any, fn: Callable) -> Any:
