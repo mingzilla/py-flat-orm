@@ -58,6 +58,13 @@ class TestInFn(unittest.TestCase):
         self.assertTrue(InFn.has_field('key', {'key': 'value'}))
         self.assertFalse(InFn.has_field('key', {}))
 
+    def test_is_blank(self):
+        self.assertFalse(InFn.is_blank("test"))
+        self.assertFalse(InFn.is_blank(" test "))
+        self.assertTrue(InFn.is_blank(""))
+        self.assertTrue(InFn.is_blank("   "))
+        self.assertTrue(InFn.is_blank(None))
+
     def test_is_not_blank(self):
         self.assertTrue(InFn.is_not_blank("test"))
         self.assertTrue(InFn.is_not_blank(" test "))

@@ -79,6 +79,10 @@ class InFn:
         return hasattr(o, field_name)
 
     @staticmethod
+    def is_blank(value: str) -> bool:
+        return not bool(value and value.strip())
+
+    @staticmethod
     def is_not_blank(value: str) -> bool:
         return bool(value and value.strip())
 
