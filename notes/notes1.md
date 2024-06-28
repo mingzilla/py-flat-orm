@@ -1,50 +1,3 @@
-## Todo
-* go through functions in in_fn
-* make sure domain can be typed based on fields
-  * use generate template function to set every single field, so that type is guaranteed
-  * when setting values, use template for the type, allow setting values based on type, and None
-
-For now, please give me these classes in python, I'll ask you the rest later
-
-* ConnectionUtil
-* OrmDomain
-* 
-* OrmMapping
-* OrmMappingSpec
-* 
-* OrmFieldError
-* OrmFieldErrors
-* OrmConstraintType
-* 
-* OrmConstraint
-* OrmConditionalValidate
-* OrmErrorCollector
-* 
-* OrmValidate
-* OrmValidateSpec
-* 
-* AbstractOrmDomain
-* 
-* OrmRead
-* 
-* OrmWrite
-* OrmWriteSpec
-* 
-* MyPerson
-* MyPersonSpec
-* 
-* RepoDb
-* RepoDbSpec
-* 
-* OrmActor
-* 
-* MyApp
-
-
-
-
-
-
 I would like to convert the groovy code below into python please, 
 * I want to keep the same class names for each class, and the methods need to be in `underscore_case` for python
 * please use SQLAlchemy
@@ -117,6 +70,10 @@ class DomainUtil:
         return obj
 
 ```
+
+Now I'm going to give you the groovy classes. When I finish giving you all of the classes I'll let you know
+
+----
 
 The below is for the groovy classes to be converted
 
@@ -234,6 +191,8 @@ class OrmMapping {
 
 ```
 
+
+hold on, I'll give you more classes, I'll let you know when I finish
 
 ```groovy
 package uk.co.mingzilla.flatorm.domain.validation
@@ -378,6 +337,8 @@ class OrmConstraint {
 
 ```
 
+hold on, I'll give you more classes, I'll let you know when I finish
+
 
 ```groovy
 package uk.co.mingzilla.flatorm.domain.validation
@@ -498,6 +459,9 @@ class OrmValidate {
 }
 
 ```
+
+hold on, I'll give you more classes, I'll let you know when I finish
+
 
 ```groovy
 package uk.co.mingzilla.flatorm.domain.definition
@@ -703,6 +667,8 @@ class OrmRead {
 }
 
 ```
+
+hold on, I'll give you more classes, I'll let you know when I finish
 
 
 ```groovy
@@ -918,6 +884,7 @@ class OrmActor {
 
 ```
 
+hold on, I'll give you more classes, I'll let you know when I finish
 
 ```groovy
 package uk.co.mingzilla.example
@@ -1090,6 +1057,8 @@ class MyApp {
 
 ```
 
+hold on, I'll give you more classes, I'll let you know when I finish
+
 And the below are unit tests to help you to create the desired python outcome
 
 ```groovy
@@ -1178,6 +1147,7 @@ class RepoDbSpec extends Specification {
 
 ```
 
+hold on, I'll give you more classes, I'll let you know when I finish
 
 ```groovy
 package uk.co.mingzilla.flatorm.domain.definition
@@ -1291,6 +1261,7 @@ class OrmMappingSpec extends Specification {
 
 ```
 
+hold on, I'll give you more classes, I'll let you know when I finish
 
 ```groovy
 package uk.co.mingzilla.flatorm.domain.definition
@@ -1646,6 +1617,7 @@ class OrmValidateSpec extends Specification {
 
 ```
 
+hold on, I'll give you more classes, I'll let you know when I finish
 
 ```groovy
 package uk.co.mingzilla.flatorm.domain
@@ -1784,3 +1756,62 @@ class OrmWriteSpec extends Specification {
 }
 
 ```
+
+hold on, I'll give you more classes, I'll let you know when I finish
+
+
+
+AbstractOrmDomain
+ConditionalValidator
+ConnectionUtil
+MyPerson
+OrmActor
+OrmConstraint
+OrmConstraintType
+OrmDomain
+OrmErrorCollector
+OrmFieldError
+OrmFieldErrors
+OrmMapping
+OrmRead
+OrmValidate
+OrmWrite
+RepoDb
+
+
+
+AbstractOrmDomain
+ConnectionUtil
+MyApp
+MyPerson
+MyPersonSpec
+OrmActor
+OrmConditionalValidate
+OrmConstraint
+OrmConstraintType
+OrmDomain
+OrmErrorCollector
+OrmFieldError
+OrmFieldErrors
+OrmMapping
+OrmMappingSpec
+OrmRead
+OrmValidate
+OrmValidateSpec
+OrmWrite
+OrmWriteSpec
+RepoDb
+RepoDbSpec
+
+1. ConnectionUtil
+2. OrmDomain
+3. OrmMapping
+4. OrmErrorCollector, OrmFieldError
+5. OrmConstraint
+6. OrmRead, OrmWrite
+7. OrmValidate
+8. AbstractOrmDomain
+9. MyPerson
+10. RepoDb
+11. OrmActor, ConditionalValidator
+12. OrmConstraintType, OrmFieldErrors
