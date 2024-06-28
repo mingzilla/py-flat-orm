@@ -1838,3 +1838,6 @@ convert OrmMapping.groovy to python please.
 * keep the class name
 * retain all the function names and method names from the groovy version if possible
 * I want the full version of this class, including every single function, ignore functions from other classes, I'll ask you to provide them later
+
+
+based on your understand of the code base, and the selected OrmMapping class, create unit tests for `mapDomain` in python

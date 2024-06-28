@@ -1,9 +1,49 @@
 import unittest
 
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping
+from test_data.domain.orm_mapping_test_domain import OrmMappingTestDomain, OrmMappingCustomDomain
 
 
 class OrmMappingTest(unittest.TestCase):
+
+    def test_map_domain_with_default_mappings(self):
+        expected_mappings = [
+            OrmMapping.create("id", "ID"),
+            OrmMapping.create("name", "NAME"),
+            OrmMapping.create("age", "AGE"),
+            OrmMapping.create("active", "ACTIVE"),
+        ]
+
+        mappings = OrmMapping.map_domain(OrmMappingTestDomain)
+
+        self.assertEqual(len(mappings), len(expected_mappings))
+
+        expected_camel_field_names = [expected_mapping.camel_field_name for expected_mapping in expected_mappings]
+        actual_camel_field_names = [mapping.camel_field_name for mapping in mappings]
+        self.assertEqual(set(expected_camel_field_names), set(actual_camel_field_names))
+
+        expected_db_field_names = [expected_mapping.db_field_name for expected_mapping in expected_mappings]
+        actual_db_field_names = [mapping.db_field_name for mapping in mappings]
+        self.assertEqual(set(expected_db_field_names), set(actual_db_field_names))
+
+    def test_map_domain_with_custom_mappings(self):
+        custom_mappings = [OrmMapping.create("custom_field", "CUSTOM_FIELD")]
+        expected_mappings = custom_mappings + [
+            OrmMapping.create("custom_id", "CUSTOM_ID"),
+            OrmMapping.create("name", "NAME"),
+        ]
+
+        mappings = OrmMapping.map_domain(OrmMappingCustomDomain, custom_mappings)
+
+        self.assertEqual(len(mappings), len(expected_mappings))
+
+        expected_camel_field_names = [expected_mapping.camel_field_name for expected_mapping in expected_mappings]
+        actual_camel_field_names = [mapping.camel_field_name for mapping in mappings]
+        self.assertEqual(set(expected_camel_field_names), set(actual_camel_field_names))
+
+        expected_db_field_names = [expected_mapping.db_field_name for expected_mapping in expected_mappings]
+        actual_db_field_names = [mapping.db_field_name for mapping in mappings]
+        self.assertEqual(set(expected_db_field_names), set(actual_db_field_names))
 
     def test_split_id_and_non_id_mappings_with_id(self):
         mappings = [
