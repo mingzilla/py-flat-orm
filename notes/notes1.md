@@ -1823,15 +1823,18 @@ convert ConnectionUtil.groovy to connection_util.py please.
 * use sqlalchemy if database access is needed
 * keep the class name
 * retain all the function names and method names from the groovy version if possible
+* I want the full version of this class, including every single function
 
 2
 convert OrmDomain.groovy to python please. 
 * use sqlalchemy if database access is needed
 * keep the class name 
 * retain all the function names and method names from the groovy version if possible
+* I want the full version of this class, including every single function
 
 3
 convert OrmMapping.groovy to python please. 
 * use sqlalchemy if database access is needed
 * keep the class name
 * retain all the function names and method names from the groovy version if possible
+* I want the full version of this class, including every single function, ignore functions from other classes, I'll ask you to provide them later
