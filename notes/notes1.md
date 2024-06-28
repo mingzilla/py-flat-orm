@@ -1803,7 +1803,7 @@ OrmWriteSpec
 RepoDb
 RepoDbSpec
 
-1. ConnectionUtil
+1. ConnectionUtil -- DONE
 2. OrmDomain
 3. OrmMapping
 4. OrmErrorCollector, OrmFieldError
@@ -1815,3 +1815,23 @@ RepoDbSpec
 10. RepoDb
 11. OrmActor, ConditionalValidator
 12. OrmConstraintType, OrmFieldErrors
+
+----
+
+1
+convert ConnectionUtil.groovy to connection_util.py please. 
+* use sqlalchemy if database access is needed
+* keep the class name
+* retain all the function names and method names from the groovy version if possible
+
+2
+convert OrmDomain.groovy to python please. 
+* use sqlalchemy if database access is needed
+* keep the class name 
+* retain all the function names and method names from the groovy version if possible
+
+3
+convert OrmMapping.groovy to python please. 
+* use sqlalchemy if database access is needed
+* keep the class name
+* retain all the function names and method names from the groovy version if possible
