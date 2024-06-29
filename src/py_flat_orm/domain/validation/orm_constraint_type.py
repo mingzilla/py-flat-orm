@@ -1,4 +1,3 @@
-#
 from enum import Enum
 
 
@@ -10,9 +9,6 @@ class OrmConstraintType(Enum):
     IN_LIST = 'IN_LIST'
     NOT_IN_LIST = 'NOT_IN_LIST'
     UNIQUE = 'UNIQUE'
-
-    def __init__(self, value):
-        self.value = value
 
     def __str__(self):
         return self.value

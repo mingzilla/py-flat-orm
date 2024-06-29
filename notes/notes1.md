@@ -1804,8 +1804,8 @@ RepoDb
 RepoDbSpec
 
 1. ConnectionUtil -- DONE
-2. OrmDomain
-3. OrmMapping
+2. OrmDomain -- DONE
+3. OrmMapping -- DONE
 4. OrmErrorCollector, OrmFieldError
 5. OrmConstraint
 6. OrmRead, OrmWrite
@@ -1840,4 +1840,4 @@ convert OrmMapping.groovy to python please.
 * I want the full version of this class, including every single function, ignore functions from other classes, I'll ask you to provide them later
 
 
-based on your understand of the code base, and the selected OrmMapping class, create unit tests for `mapDomain` in python
+based on your understanding of the code base, and the selected OrmMapping class, create unit tests for `mapDomain` in python

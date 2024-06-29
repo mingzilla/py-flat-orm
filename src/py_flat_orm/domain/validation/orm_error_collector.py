@@ -1,5 +1,8 @@
 from typing import List, Dict, Any
 
+from py_flat_orm.domain.validation.orm_field_error import OrmFieldError  # type: ignore
+from py_flat_orm.domain.validation.orm_field_errors import OrmFieldErrors  # type: ignore
+
 
 class OrmErrorCollector:
     def __init__(self, domain: 'OrmDomain'):

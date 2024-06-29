@@ -1,9 +1,8 @@
 from typing import List, Callable, Any
 
-from py_flat_orm.domain.validation.orm_conditional_validate import OrmConditionalValidate
-from py_flat_orm.domain.validation.orm_constraint import OrmConstraint
-from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
-from py_flat_orm.domain.validation.orm_field_error import OrmFieldError
+from py_flat_orm.domain.validation.orm_constraint import OrmConstraint  # type: ignore
+from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector  # type: ignore
+from py_flat_orm.domain.validation.orm_field_error import OrmFieldError  # type: ignore
 from py_flat_orm.util.base_util.in_fn import InFn  # type: ignore
 from .orm_domain import OrmDomain  # type: ignore
 
@@ -25,7 +24,7 @@ class OrmValidate:
         return collector
 
     @staticmethod
-    def if_having(field: str) -> OrmConditionalValidate:
+    def if_having(field: str) -> 'OrmConditionalValidate':
         def condition_is_met_fn(domain: OrmDomain) -> bool:
             value = InFn.prop_as_string(field, domain)
             return InFn.is_not_blank(value)
@@ -33,7 +32,7 @@ class OrmValidate:
         return OrmConditionalValidate(condition_is_met_fn)
 
     @staticmethod
-    def if_not_having(field: str) -> OrmConditionalValidate:
+    def if_not_having(field: str) -> 'OrmConditionalValidate':
         def condition_is_met_fn(domain: OrmDomain) -> bool:
             value = InFn.prop_as_string(field, domain)
             return InFn.is_blank(value)
@@ -41,5 +40,15 @@ class OrmValidate:
         return OrmConditionalValidate(condition_is_met_fn)
 
     @staticmethod
-    def if_satisfies(condition_is_met_fn: Callable[[OrmDomain], bool]) -> OrmConditionalValidate:
+    def if_satisfies(condition_is_met_fn: Callable[[OrmDomain], bool]) -> 'OrmConditionalValidate':
         return OrmConditionalValidate(condition_is_met_fn)
+
+
+class OrmConditionalValidate:
+    def __init__(self, condition_is_met_fn: Callable[[OrmDomain], bool]):
+        self.condition_is_met_fn = condition_is_met_fn
+
+    def then(self, collector: OrmErrorCollector, field: str, constraints: List[OrmConstraint]) -> OrmErrorCollector:
+        if not self.condition_is_met_fn(collector.domain):
+            return collector
+        return OrmValidate.with_rule(collector, field, constraints)

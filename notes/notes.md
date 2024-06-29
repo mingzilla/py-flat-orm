@@ -1647,6 +1647,9 @@ class OrmValidateSpec extends Specification {
 ```
 
 
+based on your understanding of the code base, and the selected python class OrmValidate, convert unit tests `OrmValidateSpec` into python `unittest` tests
+* just give me the code, you don't need to explain
+
 ```groovy
 package uk.co.mingzilla.flatorm.domain
 

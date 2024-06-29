@@ -30,6 +30,7 @@ class OrmMapping:
 
     @classmethod
     def to_domain(cls, db_domain_field_mappings: List['OrmMapping'], result_set, create_domain_fn: Callable[[dict], T]) -> T:
+        # todo - add tests
         props = {
             mapping.camel_field_name: InFn.safe_get(None, lambda: result_set.get(mapping.db_field_name))
             for mapping in db_domain_field_mappings
