@@ -1,7 +1,8 @@
 import unittest
-from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
+
 from py_flat_orm.domain.definition.orm_validate import OrmValidate
 from py_flat_orm.domain.validation.orm_constraint import OrmConstraint
+from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 from test_data.domain.orm_validate_test_domain import OrmValidateTestDomainPerson
 
 
@@ -58,16 +59,16 @@ class TestOrmValidate(unittest.TestCase):
 
     def test_in_list_number(self):
         test_cases = [
-            ('bornMonth', 1, True),
-            ('bornMonth', 12, True),
-            ('bornMonth', 0, False),
-            ('bornMonth', 13, False),
-            ('bornMonth', None, True)
+            ('born_month', 1, True),
+            ('born_month', 12, True),
+            ('born_month', 0, False),
+            ('born_month', 13, False),
+            ('born_month', None, True)
         ]
         for field, value, is_valid in test_cases:
             with self.subTest(field=field, value=value, is_valid=is_valid):
                 item = OrmErrorCollector.create(OrmValidateTestDomainPerson(**{field: value}))
-                OrmValidate.with_rule(item, 'bornMonth', [OrmConstraint.in_list(range(1, 13))])
+                OrmValidate.with_rule(item, 'born_month', [OrmConstraint.in_list(range(1, 13))])
                 self.assertEqual(not item.has_errors(), is_valid)
 
     def test_not_in_list_text(self):
@@ -84,16 +85,16 @@ class TestOrmValidate(unittest.TestCase):
 
     def test_not_in_list_number(self):
         test_cases = [
-            ('bornMonth', 1, False),
-            ('bornMonth', 12, False),
-            ('bornMonth', 0, True),
-            ('bornMonth', 13, True),
-            ('bornMonth', None, True)
+            ('born_month', 1, False),
+            ('born_month', 12, False),
+            ('born_month', 0, True),
+            ('born_month', 13, True),
+            ('born_month', None, True)
         ]
         for field, value, is_valid in test_cases:
             with self.subTest(field=field, value=value, is_valid=is_valid):
                 item = OrmErrorCollector.create(OrmValidateTestDomainPerson(**{field: value}))
-                OrmValidate.with_rule(item, 'bornMonth', [OrmConstraint.not_in_list(range(1, 13))])
+                OrmValidate.with_rule(item, 'born_month', [OrmConstraint.not_in_list(range(1, 13))])
                 self.assertEqual(not item.has_errors(), is_valid)
 
     def test_if_having(self):
