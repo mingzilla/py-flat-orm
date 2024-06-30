@@ -3,14 +3,22 @@ from typing import List, Type
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 
-from .orm_domain import OrmDomain
-from .orm_error_collector import OrmErrorCollector
-from .orm_mapping import OrmMapping
-from .orm_read import OrmRead
-from .orm_write import OrmWrite
+from py_flat_orm.domain.definition.orm_domain import OrmDomain
+from py_flat_orm.domain.definition.orm_mapping import OrmMapping
+from py_flat_orm.domain.orm_read import OrmRead
+from py_flat_orm.domain.orm_write import OrmWrite
+from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 
 
 class AbstractOrmDomain(OrmDomain):
+
+    @property
+    def get_id(self) -> int:
+        return self['id']
+
+    def set_id(self, id: int) -> None:
+        self['id'] = id
+
     def resolve_mappings(self) -> List[OrmMapping]:
         return OrmMapping.map_domain(self.__class__, [])
 
@@ -38,6 +46,7 @@ class AbstractOrmDomain(OrmDomain):
 
     def delete(self, conn: Connection) -> bool:
         return OrmWrite.delete(conn, self)
+
 
 # Example Usage:
 if __name__ == "__main__":
