@@ -41,7 +41,11 @@ This project is set up using `hatch`.
 
 ### Test in PyCharm
 * mark `tests` as Test Root, allows right-clicking directories inside to run tests
-* run tests from root, and save test config as a file
+* run tests from root, and save test config as a file e.g. `test.run.xml`
+* IMPORTANT: unmark `tests` as Test Root once `test.run.xml` is generated
+  - if `tests` is marked as root, you CANNOT run a single test file, 
+  - because it treats `tests` as root and can't find files within `src`
+  - you can verify this by putting `import sys; print(sys.path)` at the top of a test file and run it
 
 ### Static Analysis
 * add dependency `mypy`
