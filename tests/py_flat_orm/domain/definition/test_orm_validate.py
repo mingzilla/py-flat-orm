@@ -100,6 +100,8 @@ class TestOrmValidate(unittest.TestCase):
 
     def test_if_having(self):
         test_cases = [
+            ('Andy', None, False),
+            ('Andy', '', False),
             ('Andy', 20, True),
             (None, None, True),
             (None, 20, True)
