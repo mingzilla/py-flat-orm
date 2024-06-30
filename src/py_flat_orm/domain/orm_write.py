@@ -3,11 +3,11 @@ from typing import Any
 from sqlalchemy import Table, Column, MetaData, insert, update, delete
 from sqlalchemy.engine import Connection
 
-from .id_gen import IdGen
-from .in_fn import InFn
-from .orm_domain import OrmDomain
-from .orm_error_collector import OrmErrorCollector
-from .orm_mapping import OrmMapping
+from py_flat_orm.domain.definition.orm_domain import OrmDomain
+from py_flat_orm.domain.definition.orm_mapping import OrmMapping
+from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
+from py_flat_orm.util.base_util.id_gen import IdGen
+from py_flat_orm.util.base_util.in_fn import InFn
 
 
 class OrmWrite:

@@ -1,5 +1,7 @@
 import logging
 
+from sqlalchemy import text
+
 from py_flat_orm.domain.orm_actor import OrmActor
 from py_flat_orm.domain.orm_read import OrmRead
 from py_flat_orm.domain.orm_write import OrmWrite
@@ -15,8 +17,26 @@ logger = logging.getLogger(__name__)
 class MyApp:
     @staticmethod
     def main():
-        MyApp.run_without_tx()
+        MyApp.run_it()
+        # MyApp.run_without_tx()
         # MyApp.run_with_tx()
+
+    @staticmethod
+    def run_it():
+        engine = RepoDb.get_conn()
+        with engine.connect() as connection:
+            # Define a select statement
+            query = text("select * from mis_users")
+
+            # Execute the select statement
+            result = connection.execute(query)
+
+            # Fetch all rows from the result
+            rows = result.fetchall()
+
+            # Print the rows
+            for row in rows:
+                print(row)
 
     @staticmethod
     def run_without_tx():
