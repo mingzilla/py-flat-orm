@@ -37,7 +37,7 @@ class OrmConstraint:
     @staticmethod
     def is_valid(constraint: 'OrmConstraint', v: Any) -> bool:
         if constraint.constraint_type == OrmConstraintType.REQUIRED:
-            return InFn.is_not_blank(str(v))
+            return v is not None and InFn.is_not_blank(str(v))
         elif constraint.constraint_type == OrmConstraintType.MINIMUM_LENGTH:
             return v is None or len(str(v or '')) >= InFn.as_integer(constraint.value)
         elif constraint.constraint_type == OrmConstraintType.MINIMUM_VALUE:

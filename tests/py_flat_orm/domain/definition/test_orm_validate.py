@@ -10,6 +10,7 @@ class TestOrmValidate(unittest.TestCase):
 
     def test_required(self):
         test_cases = [
+            ('name', None, False),
             ('name', '', False),
             ('name', 'Andy', True)
         ]
@@ -100,7 +101,6 @@ class TestOrmValidate(unittest.TestCase):
     def test_if_having(self):
         test_cases = [
             ('Andy', 20, True),
-            ('Andy', None, False),
             (None, None, True),
             (None, 20, True)
         ]
