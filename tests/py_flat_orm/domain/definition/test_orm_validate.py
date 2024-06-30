@@ -140,7 +140,7 @@ class TestOrmValidate(unittest.TestCase):
             with self.subTest(age=age, name=name, is_valid=is_valid):
                 person = OrmValidateTestDomainPerson(name=name, age=age)
                 item = OrmErrorCollector.create(person)
-                OrmValidate.if_satisfies(lambda: person.age > 35).then(item, 'name', [OrmConstraint.required()])
+                OrmValidate.if_satisfies(lambda p: p.age > 35).then(item, 'name', [OrmConstraint.required()])
                 self.assertEqual(not item.has_errors(), is_valid)
 
     def test_if_satisfies_min_length(self):
@@ -157,7 +157,7 @@ class TestOrmValidate(unittest.TestCase):
             with self.subTest(age=age, name=name, is_valid=is_valid):
                 person = OrmValidateTestDomainPerson(name=name, age=age)
                 item = OrmErrorCollector.create(person)
-                OrmValidate.if_satisfies(lambda: person.age > 35).then(item, 'name', [OrmConstraint.min_length(3)])
+                OrmValidate.if_satisfies(lambda p: p.age > 35).then(item, 'name', [OrmConstraint.min_length(3)])
                 self.assertEqual(not item.has_errors(), is_valid)
 
     def test_if_satisfies_min_max_value(self):
@@ -177,7 +177,7 @@ class TestOrmValidate(unittest.TestCase):
             with self.subTest(name=name, age=age, is_valid=is_valid):
                 person = OrmValidateTestDomainPerson(name=name, age=age)
                 item = OrmErrorCollector.create(person)
-                OrmValidate.if_satisfies(lambda: person.name == 'Andy').then(item, 'age', [OrmConstraint.min_value(18), OrmConstraint.max_value(80)])
+                OrmValidate.if_satisfies(lambda p: p.name == 'Andy').then(item, 'age', [OrmConstraint.min_value(18), OrmConstraint.max_value(80)])
                 self.assertEqual(not item.has_errors(), is_valid)
 
     def test_if_satisfies_in_list(self):
@@ -193,7 +193,7 @@ class TestOrmValidate(unittest.TestCase):
             with self.subTest(name=name, gender=gender, is_valid=is_valid):
                 person = OrmValidateTestDomainPerson(name=name, gender=gender)
                 item = OrmErrorCollector.create(person)
-                OrmValidate.if_satisfies(lambda: person.name == 'Andy').then(item, 'gender', [OrmConstraint.in_list(['male', 'female'])])
+                OrmValidate.if_satisfies(lambda p: p.name == 'Andy').then(item, 'gender', [OrmConstraint.in_list(['male', 'female'])])
                 self.assertEqual(not item.has_errors(), is_valid)
 
     def test_if_satisfies_not_in_list(self):
@@ -209,7 +209,7 @@ class TestOrmValidate(unittest.TestCase):
             with self.subTest(name=name, gender=gender, is_valid=is_valid):
                 person = OrmValidateTestDomainPerson(name=name, gender=gender)
                 item = OrmErrorCollector.create(person)
-                OrmValidate.if_satisfies(lambda: person.name == 'Andy').then(item, 'gender', [OrmConstraint.not_in_list(['male', 'female'])])
+                OrmValidate.if_satisfies(lambda p: p.name == 'Andy').then(item, 'gender', [OrmConstraint.not_in_list(['male', 'female'])])
                 self.assertEqual(not item.has_errors(), is_valid)
 
 

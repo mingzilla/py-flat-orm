@@ -49,6 +49,11 @@ class OrmConditionalValidate:
         self.condition_is_met_fn = condition_is_met_fn
 
     def then(self, collector: OrmErrorCollector, field: str, constraints: List[OrmConstraint]) -> OrmErrorCollector:
-        if not self.condition_is_met_fn(collector.domain):
+        try:
+            is_met = self.condition_is_met_fn(collector.domain)
+        except TypeError: # occurs when comparing None and int
+            is_met = False
+
+        if not is_met:
             return collector
         return OrmValidate.with_rule(collector, field, constraints)
