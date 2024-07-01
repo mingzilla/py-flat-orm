@@ -1,6 +1,6 @@
 from typing import Callable, TypeVar
 
-from sqlalchemy.engine import Connection
+from sqlalchemy.engine import Connection, Engine
 
 from py_flat_orm.util.base_util.connection_util import ConnectionUtil
 
@@ -10,32 +10,13 @@ T = TypeVar('T')
 
 class OrmActor:
     @staticmethod
-    def run(fn: Callable[[Connection], T], driver: str, url: str, **kwargs) -> T:
-        """
-        Executes the provided closure `fn` with a database connection and safely closes it afterwards.
-
-        Args:
-        - fn (Callable[[Connection], T]): The closure to execute, which takes a Connection as argument and returns a value.
-        - driver (str): Database driver (e.g., 'postgresql', 'mysql').
-        - url (str): Database URL.
-        - kwargs: Additional keyword arguments passed to create_engine.
-
-        Returns:
-        - T: Result of executing the closure `fn`.
-
-        Raises:
-        - RuntimeError: If there's an error connecting to the database.
-        """
-        connection = None
+    def run(engine: Engine, fn: Callable[[Connection], T]) -> T:
         try:
-            connection = ConnectionUtil.get_connection(driver, url, **kwargs)
-            result = fn(connection)
-            return result
+            with engine.connect() as conn:
+                result = fn(conn)
+                return result
         except Exception as ex:
-            # Handle exceptions or errors here
             raise ex
-        finally:
-            ConnectionUtil.close(connection)
 
     @staticmethod
     def run_in_tx(fn: Callable[[Connection], T], driver: str, url: str, **kwargs) -> T:

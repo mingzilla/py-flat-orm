@@ -189,7 +189,20 @@ class TestInFn(unittest.TestCase):
     def test_self(self):
         self.assertEqual(InFn.self('test'), 'test')
 
-    def test_to_map(self):
+    def test_uniq_by(self):
+        class DummyClass:
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+
+        c1 = DummyClass(1, 'c')
+        b = DummyClass(2, 'b')
+        c2 = DummyClass(3, 'c')
+        items = [c1, b, c2]
+        uniq_items = InFn.uniq_by(items, lambda i: i.y)
+        self.assertEqual(uniq_items, [c1, b])
+
+    def test_to_dict(self):
         class DummyClass:
             def __init__(self):
                 self.field1 = 'value1'

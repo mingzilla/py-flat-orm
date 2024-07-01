@@ -1,5 +1,6 @@
-from collections import OrderedDict
 from typing import List, Callable, Type, TypeVar, Optional, Tuple
+
+from sqlalchemy import Row
 
 from py_flat_orm.util.base_util.in_fn import InFn  # type: ignore
 
@@ -19,8 +20,8 @@ class OrmMapping:
     def map_domain(cls, a_class: Type, custom_mapping: Optional[List['OrmMapping']] = None) -> List['OrmMapping']:
         defaults = cls.create_domain_default(a_class)
         items = custom_mapping + defaults if custom_mapping else defaults
-        unique_items = list(OrderedDict((item.camel_field_name, item) for item in items).values())
-        return sorted(unique_items, key=lambda x: x.db_field_name)
+        uniq_items = InFn.uniq_by(items, lambda item: item.camel_field_name)
+        return sorted(uniq_items, key=lambda x: x.db_field_name)
 
     @classmethod
     def create_domain_default(cls, a_class: Type) -> List['OrmMapping']:
@@ -28,11 +29,10 @@ class OrmMapping:
         fields = InFn.to_dict(obj).keys()
         return [cls.create(field, InFn.camel_to_upper_snake_case(field)) for field in fields]
 
-    @classmethod
-    def to_domain(cls, db_domain_field_mappings: List['OrmMapping'], result_set, create_domain_fn: Callable[[dict], T]) -> T:
-        # todo - add tests
+    @staticmethod
+    def to_domain(db_domain_field_mappings: List['OrmMapping'], row: Row, create_domain_fn: Callable[[dict], T]) -> T:
         props = {
-            mapping.camel_field_name: InFn.safe_get(None, lambda: result_set.get(mapping.db_field_name))
+            mapping.camel_field_name: InFn.safe_get(None, lambda: getattr(row, mapping.db_field_name))
             for mapping in db_domain_field_mappings
         }
         return create_domain_fn(props)

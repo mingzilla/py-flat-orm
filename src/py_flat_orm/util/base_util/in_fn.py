@@ -4,7 +4,9 @@ import re
 from datetime import date, time, datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Any, List, Optional, Callable, Type
+from typing import Any, List, Optional, Callable, Type, TypeVar
+
+T = TypeVar('T')
 
 
 class InFn:
@@ -188,6 +190,15 @@ class InFn:
     @staticmethod
     def self(x: Any) -> Any:
         return x
+
+    @staticmethod
+    def uniq_by(items: List[T], prop_fn: Callable[[T], Any]) -> List[T]:
+        item_map = {}
+        for item in items:
+            prop = prop_fn(item)
+            if prop not in item_map:
+                item_map[prop] = item
+        return list(item_map.values())
 
     @staticmethod
     def to_dict(o: Any, custom_exclude_fields: Optional[List[str]] = None) -> dict:

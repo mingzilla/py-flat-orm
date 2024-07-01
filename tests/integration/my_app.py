@@ -1,6 +1,6 @@
 import logging
 
-from sqlalchemy import text
+from sqlalchemy import text, Connection
 
 from py_flat_orm.domain.orm_actor import OrmActor
 from py_flat_orm.domain.orm_read import OrmRead
@@ -17,8 +17,9 @@ logger = logging.getLogger(__name__)
 class MyApp:
     @staticmethod
     def main():
-        MyApp.run_it()
-        # MyApp.run_without_tx()
+        # MyApp.run_it()
+        OrmActor.run(RepoDb.get_conn(), MyApp.run_without_tx1)
+
         # MyApp.run_with_tx()
 
     @staticmethod
@@ -39,27 +40,30 @@ class MyApp:
                 print(row)
 
     @staticmethod
-    def run_without_tx():
-        def run(conn):
-            logger.info('run')
-            id_gen = IdGen.create()
-            people1 = OrmRead.list_all(conn, MyPerson)
-            # people2 = MyPerson.list_by_name_starts_with(conn, 'An')
-            person = OrmRead.get_by_id(conn, MyPerson, 1)
-            logger.info(OrmRead.count(conn, MyPerson))
-            logger.info(', '.join([p.name for p in people1]))
-            # logger.info(', '.join([p.name for p in people2]))
-            logger.info(person.name if person else None)
-            p = MyPerson(id=id_gen.get_int(), name='Andrew')
-            collector = OrmWrite.validate_and_save(conn, p)
-            logger.info(p.id)
-            logger.info(collector.has_errors())
-            logger.info(OrmRead.count(conn, MyPerson))
-            is_deleted = OrmWrite.delete(conn, p)
-            logger.info(is_deleted)
-            logger.info(OrmRead.count(conn, MyPerson))
+    def run_without_tx1(conn: Connection):
+        logger.info('run')
+        people1 = OrmRead.list_all(conn, MyPerson)
+        logger.info(', '.join([p.name for p in people1]))
 
-        OrmActor.run(RepoDb.get_conn(), run)
+    @staticmethod
+    def run_without_tx(conn: Connection):
+        logger.info('run')
+        id_gen = IdGen.create()
+        people1 = OrmRead.list_all(conn, MyPerson)
+        # people2 = MyPerson.list_by_name_starts_with(conn, 'An')
+        person = OrmRead.get_by_id(conn, MyPerson, 1)
+        logger.info(OrmRead.count(conn, MyPerson))
+        logger.info(', '.join([p.name for p in people1]))
+        # logger.info(', '.join([p.name for p in people2]))
+        logger.info(person.name if person else None)
+        p = MyPerson(id=id_gen.get_int(), name='Andrew')
+        collector = OrmWrite.validate_and_save(conn, p)
+        logger.info(p.id)
+        logger.info(collector.has_errors())
+        logger.info(OrmRead.count(conn, MyPerson))
+        is_deleted = OrmWrite.delete(conn, p)
+        logger.info(is_deleted)
+        logger.info(OrmRead.count(conn, MyPerson))
 
     @staticmethod
     def run_with_tx():
