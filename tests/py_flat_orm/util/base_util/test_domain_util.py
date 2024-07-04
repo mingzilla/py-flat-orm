@@ -1,22 +1,7 @@
 import unittest
 
 from py_flat_orm.util.base_util.domain_util import DomainUtil
-
-
-class TestDomain:
-    def __init__(self, name='', age=0, active=False):
-        self.name = name
-        self.age = age
-        self.active = active
-
-
-class TestDomain1:
-    def __init__(self, int1=0, int2=0, int3=0, text1='', text2=''):
-        self.int1 = int1
-        self.int2 = int2
-        self.int3 = int3
-        self.text1 = text1
-        self.text2 = text2
+from test_data.domain.domain_util_test_domain import DomainUtilTestDomain, DomainUtilTestDomain1
 
 
 class DomainUtilTest(unittest.TestCase):
@@ -40,7 +25,7 @@ class DomainUtilTest(unittest.TestCase):
         ]
         for new_prop, expected in zip(new_props, expected_results):
             with self.subTest(new_prop=new_prop):
-                obj = TestDomain(name="John", age=25, active=True)
+                obj = DomainUtilTestDomain(name="John", age=25, active=True)
                 DomainUtil.merge_fields(obj, new_prop)
                 self.assertEqual((obj.name, obj.age, obj.active), expected)
 
@@ -57,7 +42,7 @@ class DomainUtilTest(unittest.TestCase):
         ]
         for new_prop, expected in zip(new_props, expected_results):
             with self.subTest(new_prop=new_prop):
-                obj = TestDomain(name="John", age=25, active=True)
+                obj = DomainUtilTestDomain(name="John", age=25, active=True)
                 DomainUtil.merge_fields(obj, new_prop)
                 self.assertEqual((obj.name, obj.age, obj.active), expected)
 
@@ -75,7 +60,7 @@ class DomainUtilTest(unittest.TestCase):
             'text1': None,  # user intentionally sets it to none, and resolved as none, use none
             'text2': None  # user does not have an intention to set it to none, but resolved to none (this is none just because a variable is created without value), should use db value
         }
-        obj1 = TestDomain1(int1=1, int2=1, int3=1, text1='X', text2='X')  # values in the db
+        obj1 = DomainUtilTestDomain1(int1=1, int2=1, int3=1, text1='X', text2='X')  # values in the db
         new_obj = DomainUtil.merge_request_data(obj1, values, original_values)
         self.assertEqual(new_obj.int1, 5)
         self.assertEqual(new_obj.int2, 6)

@@ -1,8 +1,7 @@
 from typing import List, Callable, Type, TypeVar, Optional, Tuple
 
-from sqlalchemy import Row
-
 from py_flat_orm.util.base_util.in_fn import InFn  # type: ignore
+from sqlalchemy import Row
 
 T = TypeVar('T')
 
@@ -27,7 +26,7 @@ class OrmMapping:
     def create_domain_default(cls, a_class: Type) -> List['OrmMapping']:
         obj = a_class()
         fields = InFn.to_dict(obj).keys()
-        return [cls.create(field, InFn.camel_to_upper_snake_case(field)) for field in fields]
+        return [cls.create(field, InFn.camel_to_upper_snake_case(field) or '') for field in fields]
 
     @staticmethod
     def to_domain(db_domain_field_mappings: List['OrmMapping'], row: Row, create_domain_fn: Callable[[dict], T]) -> T:
