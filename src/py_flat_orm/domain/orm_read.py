@@ -1,4 +1,4 @@
-from typing import Callable, List, Type, TypeVar
+from typing import Callable, List, Type, TypeVar, Optional
 
 import sqlalchemy.exc
 from sqlalchemy import create_engine, text, Connection, TextClause
@@ -7,8 +7,10 @@ from sqlalchemy.orm import Session
 from py_flat_orm.domain.definition.orm_domain import OrmDomain
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping
 from py_flat_orm.util.base_util.domain_util import DomainUtil
+from py_flat_orm.util.base_util.in_fn import InFn
 
 T = TypeVar('T', bound=OrmDomain)
+
 
 class OrmRead:
     NO_PARAMS: Callable[[str], str] = lambda s: s  # Placeholder for no parameter function
@@ -43,18 +45,12 @@ class OrmRead:
         return objs
 
     @staticmethod
-    def get_by_id(engine: create_engine, cls: Type[T], id_value: int) -> T:
-        with Session(engine) as session:
-            domain = cls()  # Instantiate the domain class
-            mappings = domain.resolve_mappings()
-
-            id_field = next((mapping.db_field_name for mapping in mappings if mapping.camel_field_name == 'id'), None)
-            if not id_field:
-                raise ValueError("ID field not found in mappings")
-
-            select_statement = text(f"SELECT * FROM {domain.table_name()} WHERE {id_field} = :id")
-            params = {'id': id_value}
-            return OrmRead.get_and_merge(session, mappings, select_statement, params)
+    def get_by_id(conn: Connection, cls: Type[T], id_value: int) -> Optional[T]:
+        domain = cls()
+        id_mapping = OrmMapping.get_id_mapping(domain.resolve_mappings())
+        select_statement = f"SELECT * FROM {domain.table_name()} WHERE {id_mapping.db_field_name} = :id"
+        items = OrmRead.list(conn, cls, select_statement, {'id': id_value})
+        return InFn.first(items)
 
     @staticmethod
     def get_first(engine: create_engine, cls: Type[T], select_statement: str) -> T:

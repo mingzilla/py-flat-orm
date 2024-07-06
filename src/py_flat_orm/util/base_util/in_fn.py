@@ -205,6 +205,11 @@ class InFn:
         return [cls(obj) for obj in items]  # type: ignore
 
     @staticmethod
+    def first(items: List[T]) -> Optional[T]:
+        if not items: return None  # list is None or empty
+        return items[0]
+
+    @staticmethod
     def to_dict(o: Any, custom_exclude_fields: Optional[List[str]] = None) -> dict:
         exclude_fields = custom_exclude_fields or []
         keys = InFn.get_keys(o) if o else []

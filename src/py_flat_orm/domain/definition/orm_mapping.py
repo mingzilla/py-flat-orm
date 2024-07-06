@@ -1,7 +1,8 @@
 from typing import List, Callable, Type, TypeVar, Optional, Tuple
 
-from py_flat_orm.util.base_util.in_fn import InFn  # type: ignore
 from sqlalchemy import Row
+
+from py_flat_orm.util.base_util.in_fn import InFn  # type: ignore
 
 T = TypeVar('T')
 
@@ -43,6 +44,6 @@ class OrmMapping:
         return [id_mapping] if id_mapping else [], non_id_mappings
 
     @classmethod
-    def get_id_mapping(cls, mappings: List['OrmMapping']) -> Optional['OrmMapping']:
+    def get_id_mapping(cls, mappings: List['OrmMapping']) -> 'OrmMapping':
         id_and_non_id_mappings = cls.split_id_and_non_id_mappings(mappings)
-        return id_and_non_id_mappings[0][0] if id_and_non_id_mappings[0] else None
+        return id_and_non_id_mappings[0][0]

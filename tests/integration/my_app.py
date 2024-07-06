@@ -24,12 +24,8 @@ class MyApp:
 
     @staticmethod
     def run_without_tx1(conn: Connection):
-        logger.info('run')
-        select_statement = f"SELECT * FROM {MyPerson().table_name()} WHERE usercode = :usercode"
-        people3 = OrmRead.list(conn, MyPerson, select_statement, {'usercode': "Bob"})
+        people3 = [OrmRead.get_by_id(conn, MyPerson, 3)]
         logger.info(', '.join([p.name for p in people3]))
-
-        # people1 = [OrmRead.get_by_id(conn, MyPerson, 1)]
 
     @staticmethod
     def run_without_tx(conn: Connection):
