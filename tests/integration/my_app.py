@@ -18,7 +18,7 @@ class MyApp:
     @staticmethod
     def main():
         # MyApp.run_it()
-        OrmActor.run(RepoDb.get_conn(), MyApp.run_without_tx1)
+        OrmActor.run_with_tx(RepoDb.get_conn(), MyApp.run_without_tx1)
 
         # MyApp.run_with_tx()
 
@@ -84,9 +84,8 @@ class MyApp:
             have_errors = OrmErrorCollector.have_errors(people)
             if have_errors:
                 error_map['people'] = OrmErrorCollector.to_error_maps(people)
-                OrmActor.terminate()
 
-        OrmActor.run_in_tx(RepoDb.get_conn(), run_in_tx)
+        OrmActor.run_with_tx(RepoDb.get_conn(), run_in_tx)
         logger.info(error_map)
 
     @staticmethod
