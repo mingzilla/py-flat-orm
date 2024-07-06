@@ -48,10 +48,11 @@ class MyApp:
         people4 = [OrmRead.get_by_id(conn, MyPerson, 1)]
         logger.info(', '.join([p.name for p in people4]))
 
+        # 5
+        logger.info(OrmRead.count(conn, MyPerson))
+
         # Above is Tested
 
-        logger.info(OrmRead.count(conn, MyPerson))
-        logger.info(person.name if person else None)
         p = MyPerson(id=id_gen.get_int(), name='Andrew')
         collector = OrmWrite.validate_and_save(conn, p)
         logger.info(p.id)
