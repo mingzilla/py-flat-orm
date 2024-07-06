@@ -45,7 +45,7 @@ class OrmRead:
     @staticmethod
     def get_by_id(conn: Connection, cls: Type[T], id_value: int) -> Optional[T]:
         domain = cls()
-        id_mapping = OrmMapping.get_id_mapping(domain.resolve_mappings())
+        id_mapping = domain.get_id_mapping()
         select_statement = f"SELECT * FROM {domain.table_name()} WHERE {id_mapping.db_field_name} = :id"
         return OrmRead.get_first(conn, cls, select_statement, {'id': id_value})
 

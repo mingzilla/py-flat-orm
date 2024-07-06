@@ -21,6 +21,7 @@ class OrmWrite:
 
     @staticmethod
     def delete(conn: Connection, domain: OrmDomain) -> bool:
+        select_statement = f"delete FROM {domain.table_name()} where id = %s"
         statement = OrmWrite.create_delete_statement(domain)
         result = conn.execute(statement)
         return result.rowcount > 0

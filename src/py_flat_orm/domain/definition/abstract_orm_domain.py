@@ -1,6 +1,5 @@
-from typing import List, Type
+from typing import List, TypeVar, Optional
 
-from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 
 from py_flat_orm.domain.definition.orm_domain import OrmDomain
@@ -9,6 +8,7 @@ from py_flat_orm.domain.orm_read import OrmRead
 from py_flat_orm.domain.orm_write import OrmWrite
 from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 
+T = TypeVar('T', bound='AbstractOrmDomain')
 
 class AbstractOrmDomain(OrmDomain):
 
@@ -22,21 +22,20 @@ class AbstractOrmDomain(OrmDomain):
     def resolve_mappings(self) -> List[OrmMapping]:
         return OrmMapping.map_domain(self.__class__, [])
 
-    @staticmethod
-    def count(conn: Connection, a_class: Type['AbstractOrmDomain']) -> int:
-        return OrmRead.count(conn, a_class)
+    def get_id_mapping(self) -> OrmMapping:
+        return OrmMapping.get_id_mapping(self.resolve_mappings())
 
-    @staticmethod
-    def list_all(conn: Connection, a_class: Type['AbstractOrmDomain']) -> List['AbstractOrmDomain']:
-        return OrmRead.list_all(conn, a_class)
+    def count(self, conn: Connection) -> int:
+        return OrmRead.count(conn, self.__class__)
 
-    @staticmethod
-    def get_by_id(conn: Connection, a_class: Type['AbstractOrmDomain'], id: int) -> 'AbstractOrmDomain':
-        return OrmRead.get_by_id(conn, a_class, id)
+    def list_all(self: T, conn: Connection) -> List[T]:
+        return OrmRead.list_all(conn, self.__class__)
 
-    @staticmethod
-    def get_first(conn: Connection, a_class: Type['AbstractOrmDomain'], select_statement: str) -> 'AbstractOrmDomain':
-        return OrmRead.get_first(conn, a_class, select_statement)
+    def get_by_id(self: T, conn: Connection, id: int) -> Optional[T]:
+        return OrmRead.get_by_id(conn, self.__class__, id)
+
+    def get_first(self: T, conn: Connection, select_statement: str, params: dict) -> Optional[T]:
+        return OrmRead.get_first(conn, self.__class__, select_statement, params)
 
     def validate_and_save(self, conn: Connection) -> OrmErrorCollector:
         return OrmWrite.validate_and_save(conn, self)
@@ -46,22 +45,3 @@ class AbstractOrmDomain(OrmDomain):
 
     def delete(self, conn: Connection) -> bool:
         return OrmWrite.delete(conn, self)
-
-
-# Example Usage:
-if __name__ == "__main__":
-    engine = create_engine('your_database_url')  # Replace 'your_database_url' with your actual database URL
-    connection = engine.connect()
-
-    # Example operations
-    domain_instance = AbstractOrmDomain()
-    mappings = domain_instance.resolve_mappings()
-    count = AbstractOrmDomain.count(connection, AbstractOrmDomain)
-    all_records = AbstractOrmDomain.list_all(connection, AbstractOrmDomain)
-    record_by_id = AbstractOrmDomain.get_by_id(connection, AbstractOrmDomain, 1)
-    first_record = AbstractOrmDomain.get_first(connection, AbstractOrmDomain, "SELECT * FROM some_table LIMIT 1")
-    error_collector = domain_instance.validate_and_save(connection)
-    inserted_or_updated = domain_instance.insert_or_update(connection)
-    deleted = domain_instance.delete(connection)
-
-    connection.close()  # Close the connection when done
