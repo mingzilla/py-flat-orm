@@ -23,38 +23,36 @@ class MyApp:
         # MyApp.run_with_tx()
 
     @staticmethod
-    def run_it():
-        engine = RepoDb.get_conn()
-        with engine.connect() as connection:
-            # Define a select statement
-            query = text("select * from mis_users")
-
-            # Execute the select statement
-            result = connection.execute(query)
-
-            # Fetch all rows from the result
-            rows = result.fetchall()
-
-            # Print the rows
-            for row in rows:
-                print(row)
-
-    @staticmethod
     def run_without_tx1(conn: Connection):
         logger.info('run')
-        people1 = OrmRead.list_all(conn, MyPerson)
-        logger.info(', '.join([p.name for p in people1]))
+        select_statement = f"SELECT * FROM {MyPerson().table_name()} WHERE usercode = :usercode"
+        people3 = OrmRead.list(conn, MyPerson, select_statement, {'usercode': "Bob"})
+        logger.info(', '.join([p.name for p in people3]))
+
+        # people1 = [OrmRead.get_by_id(conn, MyPerson, 1)]
 
     @staticmethod
     def run_without_tx(conn: Connection):
         logger.info('run')
         id_gen = IdGen.create()
+
+        # 1
         people1 = OrmRead.list_all(conn, MyPerson)
-        # people2 = MyPerson.list_by_name_starts_with(conn, 'An')
+        logger.info(', '.join([p.name for p in people1]))
+
+        # 2
+        people2 = MyPerson.list_by_name_starts_with(conn, 'An')
+        logger.info(', '.join([p.name for p in people2]))
+
+        # 3
+        select_statement = f"SELECT * FROM {MyPerson().table_name()} WHERE usercode = :usercode"
+        people3 = OrmRead.list(conn, MyPerson, select_statement, {'usercode': "Bob"})
+        logger.info(', '.join([p.name for p in people3]))
+
+        # Above is Tested
+
         person = OrmRead.get_by_id(conn, MyPerson, 1)
         logger.info(OrmRead.count(conn, MyPerson))
-        logger.info(', '.join([p.name for p in people1]))
-        # logger.info(', '.join([p.name for p in people2]))
         logger.info(person.name if person else None)
         p = MyPerson(id=id_gen.get_int(), name='Andrew')
         collector = OrmWrite.validate_and_save(conn, p)
@@ -86,6 +84,23 @@ class MyApp:
 
         OrmActor.run_in_tx(RepoDb.get_conn(), run_in_tx)
         logger.info(error_map)
+
+    @staticmethod
+    def run_it():
+        engine = RepoDb.get_conn()
+        with engine.connect() as connection:
+            # Define a select statement
+            query = text("select * from mis_users")
+
+            # Execute the select statement
+            result = connection.execute(query)
+
+            # Fetch all rows from the result
+            rows = result.fetchall()
+
+            # Print the rows
+            for row in rows:
+                print(row)
 
 
 if __name__ == '__main__':

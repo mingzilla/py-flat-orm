@@ -1,8 +1,11 @@
 from typing import List
 
+from sqlalchemy import Connection
+
 from py_flat_orm.domain.definition.abstract_orm_domain import AbstractOrmDomain
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping
 from py_flat_orm.domain.definition.orm_validate import OrmValidate
+from py_flat_orm.domain.orm_read import OrmRead
 from py_flat_orm.domain.validation.orm_constraint import OrmConstraint
 from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 
@@ -29,6 +32,6 @@ class MyPerson(AbstractOrmDomain):
         return 'mis_users'
 
     @staticmethod
-    def list_by_name_starts_with(session, prefix: str) -> List['MyPerson']:
-        sql = f"select * from mis_users where usercode like {prefix}%"
-        return []
+    def list_by_name_starts_with(conn: Connection, prefix: str) -> List['MyPerson']:
+        select_statement = f"SELECT * FROM {MyPerson().table_name()} WHERE usercode like CONCAT(:prefix, '%')"  # MySQL's syntax to use %
+        return OrmRead.list(conn, MyPerson, select_statement, {'prefix': prefix})

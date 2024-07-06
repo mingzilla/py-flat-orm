@@ -201,6 +201,10 @@ class InFn:
         return list(item_map.values())
 
     @staticmethod
+    def cast_list(items: List[Any], cls: Type[T]) -> List[T]:
+        return [cls(obj) for obj in items]  # type: ignore
+
+    @staticmethod
     def to_dict(o: Any, custom_exclude_fields: Optional[List[str]] = None) -> dict:
         exclude_fields = custom_exclude_fields or []
         keys = InFn.get_keys(o) if o else []
