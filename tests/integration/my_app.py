@@ -24,8 +24,7 @@ class MyApp:
 
     @staticmethod
     def run_without_tx1(conn: Connection):
-        people3 = [OrmRead.get_by_id(conn, MyPerson, 3)]
-        logger.info(', '.join([p.name for p in people3]))
+        logger.info(OrmRead.count(conn, MyPerson))
 
     @staticmethod
     def run_without_tx(conn: Connection):
@@ -45,9 +44,12 @@ class MyApp:
         people3 = OrmRead.list(conn, MyPerson, select_statement, {'usercode': "Bob"})
         logger.info(', '.join([p.name for p in people3]))
 
+        # 4
+        people4 = [OrmRead.get_by_id(conn, MyPerson, 1)]
+        logger.info(', '.join([p.name for p in people4]))
+
         # Above is Tested
 
-        person = OrmRead.get_by_id(conn, MyPerson, 1)
         logger.info(OrmRead.count(conn, MyPerson))
         logger.info(person.name if person else None)
         p = MyPerson(id=id_gen.get_int(), name='Andrew')

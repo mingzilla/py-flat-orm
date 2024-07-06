@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from py_flat_orm.domain.definition.orm_domain import OrmDomain
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping
 from py_flat_orm.util.base_util.domain_util import DomainUtil
-from py_flat_orm.util.base_util.in_fn import InFn
 
 T = TypeVar('T', bound=OrmDomain)
 
@@ -35,8 +34,8 @@ class OrmRead:
         objs = []
 
         try:
-            statement = conn.execute(query, params)
-            for row in statement:
+            result = conn.execute(query, params)
+            for row in result:
                 obj = OrmMapping.to_domain(db_domain_field_mappings, row, create_domain_fn)
                 objs.append(obj)
         except sqlalchemy.exc.SQLAlchemyError as sql_ex:
@@ -49,25 +48,25 @@ class OrmRead:
         domain = cls()
         id_mapping = OrmMapping.get_id_mapping(domain.resolve_mappings())
         select_statement = f"SELECT * FROM {domain.table_name()} WHERE {id_mapping.db_field_name} = :id"
-        items = OrmRead.list(conn, cls, select_statement, {'id': id_value})
-        return InFn.first(items)
+        return OrmRead.get_first(conn, cls, select_statement, {'id': id_value})
 
     @staticmethod
-    def get_first(engine: create_engine, cls: Type[T], select_statement: str) -> T:
-        with Session(engine) as session:
-            domain = cls()  # Instantiate the domain class
-            mappings = domain.resolve_mappings()
+    def get_first(conn: Connection, cls: Type[T], select_statement: str, params: dict) -> Optional[T]:
+        domain = cls()
+        query = text(f"{select_statement}")
 
-            return OrmRead.get_and_merge(session, mappings, text(select_statement), OrmRead.NO_PARAMS)
+        def create_domain_fn(props: dict):
+            return DomainUtil.merge_fields(cls(), props)
+
+        return OrmRead.get_and_merge(conn, domain.resolve_mappings(), query, params, create_domain_fn)
 
     @staticmethod
-    def get_and_merge(session: Session, db_domain_field_mappings: List[OrmMapping], select_statement: str, params: dict) -> T:
+    def get_and_merge(conn: Connection, db_domain_field_mappings: List[OrmMapping], query: TextClause, params: dict, create_domain_fn: Callable[[dict], T]) -> Optional[T]:
         try:
-            statement = session.execute(select_statement, params)
-            row = statement.fetchone()
-            if row:
-                props = dict(row)
-                return db_domain_field_mappings.to_domain(props)
+            result = conn.execute(query, params)
+            row = result.fetchone()
+            if row is not None:
+                return OrmMapping.to_domain(db_domain_field_mappings, row, create_domain_fn)
             return None
         except sqlalchemy.exc.SQLAlchemyError as sql_ex:
             raise RuntimeError(f"Failed running select statement to create object: {sql_ex}")
@@ -82,7 +81,7 @@ class OrmRead:
     @staticmethod
     def get_count(session: Session, select_statement: str) -> int:
         try:
-            statement = session.execute(select_statement)
-            return statement.scalar()
+            result = session.execute(select_statement)
+            return result.scalar()
         except sqlalchemy.exc.SQLAlchemyError as sql_ex:
             raise RuntimeError(f"Failed running select statement to count records: {sql_ex}")
