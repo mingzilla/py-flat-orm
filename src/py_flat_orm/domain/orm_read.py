@@ -1,8 +1,7 @@
 from typing import Callable, List, Type, TypeVar, Optional
 
 import sqlalchemy.exc
-from sqlalchemy import create_engine, text, Connection, TextClause
-from sqlalchemy.orm import Session
+from sqlalchemy import text, Connection, TextClause
 
 from py_flat_orm.domain.definition.orm_domain import OrmDomain
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping
@@ -72,16 +71,14 @@ class OrmRead:
             raise RuntimeError(f"Failed running select statement to create object: {sql_ex}")
 
     @staticmethod
-    def count(engine: create_engine, cls: Type[T]) -> int:
-        with Session(engine) as session:
-            domain = cls()  # Instantiate the domain class
-            select_statement = text(f"SELECT COUNT(*) FROM {domain.table_name()}")
-            return OrmRead.get_count(session, select_statement)
+    def count(conn: Connection, cls: Type[T]) -> int:
+        select_statement = text(f"SELECT COUNT(*) FROM {cls().table_name()}")
+        return OrmRead.get_count(conn, select_statement)
 
     @staticmethod
-    def get_count(session: Session, select_statement: str) -> int:
+    def get_count(conn: Connection, query: TextClause) -> int:
         try:
-            result = session.execute(select_statement)
+            result = conn.execute(query)
             return result.scalar()
         except sqlalchemy.exc.SQLAlchemyError as sql_ex:
             raise RuntimeError(f"Failed running select statement to count records: {sql_ex}")
