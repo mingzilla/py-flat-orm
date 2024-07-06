@@ -26,21 +26,39 @@ classifiers = [
 version = "0.1.0"
 description = "A sample project for ORM"
 
-# Non-generated section
-[tool.hatch.envs.py-flat-orm]
-path = ".venv"
-paths = ["src"]
 dependencies = [
-    "numpy>=1.21.0",
+    "numpy>=1.21.0,<2.0.0",
     "pydash",
-    "mypy",
-    "pylint",
-    "flake8",
-    "black",
     "pandas",
     "sqlalchemy",
     "pymysql",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "mypy",
+    "pylint",
+    "flake8",
+    "black",
+]
+
+# Non-generated section
+[tool.hatch.envs.py-flat-orm]
+path = ".venv"
+paths = ["src"]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+    "pytest-cov",
+]
+
+[tool.hatch.envs.default.scripts]
+# hatch run test
+test = "pytest {args:tests}"
+# hatch run test-cov
+test-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=py_flat_orm --cov=tests {args:tests}"
+
 
 [project.urls]
 Documentation = "https://github.com/ming.huang/py-flat-orm#readme"

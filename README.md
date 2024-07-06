@@ -34,6 +34,9 @@ This project is set up using `hatch`.
 * set up with git 
 * Run e.g. `xi_init.ps1` to apply `pyproject.toml`
 
+### Sync Dependencies
+* run `hatch shell` to activate env, it also syncs dependencies
+
 ### Tests Data
 * use `./test_data` directory put test data
   * test data cannot be put into `./tests`, otherwise when running `hatch test`, it treats them as tests to execute
