@@ -1,13 +1,9 @@
-from typing import Any
-
-from sqlalchemy import Table, Column, MetaData, insert, update, delete
-from sqlalchemy.engine import Connection
+from sqlalchemy import text, Connection
 
 from py_flat_orm.domain.definition.orm_domain import OrmDomain
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping
 from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 from py_flat_orm.util.base_util.id_gen import IdGen
-from py_flat_orm.util.base_util.in_fn import InFn
 
 
 class OrmWrite:
@@ -21,59 +17,43 @@ class OrmWrite:
 
     @staticmethod
     def delete(conn: Connection, domain: OrmDomain) -> bool:
-        select_statement = f"delete FROM {domain.table_name()} where id = %s"
-        statement = OrmWrite.create_delete_statement(domain)
-        result = conn.execute(statement)
+        statement = f"delete FROM {domain.table_name()} where {domain.get_id_mapping().db_field_name} = {domain.get_id()}"
+        result = conn.execute(text(statement))
         return result.rowcount > 0
 
     @staticmethod
     def insert_or_update(conn: Connection, domain: OrmDomain) -> OrmDomain:
-        is_new = IdGen.is_generated_id(domain.id)
+        is_new = IdGen.is_generated_id(domain.get_id())
         if is_new:
-            statement, id_mapping = OrmWrite.create_insert_statement(domain)
-            result = conn.execute(statement)
-            domain.id = result.inserted_primary_key[0]
+            return OrmWrite.insert(conn, domain)
         else:
-            statement = OrmWrite.create_update_statement(domain)
-            conn.execute(statement)
+            return OrmWrite.update(conn, domain)
+
+    @staticmethod
+    def insert(conn: Connection, domain: OrmDomain) -> OrmDomain:
+        mappings = domain.resolve_mappings()
+        table_name = domain.table_name().lower()
+
+        id_mappings, non_id_mappings = OrmMapping.split_id_and_non_id_mappings(mappings)
+        field_names = ', '.join(map(lambda m: m.db_field_name, non_id_mappings))
+        values = ', '.join(map(lambda m: f":{m.db_field_name}", non_id_mappings))
+        params = OrmDomain.to_params(domain, non_id_mappings)
+
+        statement = f"insert into {table_name} ({field_names}) values ({values})"
+        result = conn.execute(text(statement), params)
+        domain.set_id(result.lastrowid)
         return domain
 
     @staticmethod
-    def create_insert_statement(domain: OrmDomain) -> (Any, OrmMapping):
+    def update(conn: Connection, domain: OrmDomain) -> OrmDomain:
         mappings = domain.resolve_mappings()
-        non_id_mappings = [m for m in mappings if not m.is_id]
-        fields = {m.db_field_name: InFn.prop(m.camel_field_name, domain) for m in non_id_mappings}
         table_name = domain.table_name().lower()
-        metadata = MetaData()
-        table = Table(table_name, metadata, *[
-            Column(m.db_field_name, InFn.get_type(domain.__class__, m.camel_field_name)) for m in non_id_mappings
-        ])
-        statement = insert(table).values(**fields)
-        id_mapping = next(m for m in mappings if m.is_id)
-        return statement, id_mapping
 
-    @staticmethod
-    def create_update_statement(domain: OrmDomain) -> Any:
-        mappings = domain.resolve_mappings()
-        id_mapping = next(m for m in mappings if m.is_id)
-        non_id_mappings = [m for m in mappings if not m.is_id]
-        fields = {m.db_field_name: InFn.prop(m.camel_field_name, domain) for m in non_id_mappings}
-        table_name = domain.table_name().lower()
-        metadata = MetaData()
-        table = Table(table_name, metadata, *[
-            Column(m.db_field_name, InFn.get_type(domain.__class__, m.camel_field_name)) for m in non_id_mappings
-        ])
-        statement = update(table).where(getattr(table.c, id_mapping.db_field_name) == domain.id).values(**fields)
-        return statement
+        id_mappings, non_id_mappings = OrmMapping.split_id_and_non_id_mappings(mappings)
+        field_names = ', '.join(map(lambda m: m.db_field_name, non_id_mappings))
+        values = ', '.join(map(lambda m: f":{m.db_field_name}", non_id_mappings))
+        params = OrmDomain.to_params(domain, non_id_mappings)
 
-    @staticmethod
-    def create_delete_statement(domain: OrmDomain) -> Any:
-        mappings = domain.resolve_mappings()
-        id_mapping = next(m for m in mappings if m.is_id)
-        table_name = domain.table_name().lower()
-        metadata = MetaData()
-        table = Table(table_name, metadata, *[
-            Column(m.db_field_name, InFn.get_type(domain.__class__, m.camel_field_name)) for m in mappings
-        ])
-        statement = delete(table).where(getattr(table.c, id_mapping.db_field_name) == domain.id)
-        return statement
+        statement = f"update {table_name} ({field_names}) values ({values}) WHERE {id_mappings[0].db_field_name} = {domain.get_id()}"
+        conn.execute(text(statement), params)
+        return domain

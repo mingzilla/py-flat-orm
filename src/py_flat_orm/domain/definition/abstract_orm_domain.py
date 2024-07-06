@@ -12,11 +12,14 @@ T = TypeVar('T', bound='AbstractOrmDomain')
 
 class AbstractOrmDomain(OrmDomain):
 
+    def __init__(self, **kwargs):
+        self.id: int = kwargs.get('id')
+
     def get_id(self) -> int:
-        return self['id']
+        return self.id
 
     def set_id(self, id_value: int):
-        self['id'] = id_value
+        self.id = id_value
 
     def resolve_mappings(self) -> List[OrmMapping]:
         return OrmMapping.map_domain(self.__class__, [])

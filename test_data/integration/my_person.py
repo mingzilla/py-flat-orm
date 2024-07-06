@@ -12,7 +12,7 @@ from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 
 class MyPerson(AbstractOrmDomain):
     def __init__(self, **kwargs):
-        self.id: int = kwargs.get('id')
+        super().__init__(**kwargs)
         self.name: str = kwargs.get('name')
 
     def resolve_mappings(self) -> List[OrmMapping]:

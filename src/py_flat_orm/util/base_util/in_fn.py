@@ -89,6 +89,14 @@ class InFn:
         return bool(value and value.strip())
 
     @staticmethod
+    def is_str(obj: Any) -> bool:
+        return isinstance(obj, str)
+
+    @staticmethod
+    def is_date_or_datetime(obj: Any) -> bool:
+        return isinstance(obj, (date, datetime))
+
+    @staticmethod
     def is_decimal(obj: Any) -> bool:
         return InFn.as_decimal(obj) is not None
 
@@ -228,6 +236,13 @@ class InFn:
         if isinstance(o, dict):
             return o.get(name)
         return getattr(o, name, None)
+
+    @staticmethod
+    def inline_prop(name: str):
+        def fn(o: Any) -> Any:
+            return InFn.prop(name, o)
+
+        return fn
 
     @staticmethod
     def to_date(value: Any) -> date:
