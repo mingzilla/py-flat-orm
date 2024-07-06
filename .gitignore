@@ -10,6 +10,7 @@ __pycache__/
 .hatch/
 .hatch.lock
 dist/
+.coverage
 
 # Virtual environment
 .venv/
