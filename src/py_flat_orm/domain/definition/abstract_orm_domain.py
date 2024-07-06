@@ -12,12 +12,11 @@ T = TypeVar('T', bound='AbstractOrmDomain')
 
 class AbstractOrmDomain(OrmDomain):
 
-    @property
     def get_id(self) -> int:
         return self['id']
 
-    def set_id(self, id: int) -> None:
-        self['id'] = id
+    def set_id(self, id_value: int):
+        self['id'] = id_value
 
     def resolve_mappings(self) -> List[OrmMapping]:
         return OrmMapping.map_domain(self.__class__, [])
@@ -31,8 +30,8 @@ class AbstractOrmDomain(OrmDomain):
     def list_all(self: T, conn: Connection) -> List[T]:
         return OrmRead.list_all(conn, self.__class__)
 
-    def get_by_id(self: T, conn: Connection, id: int) -> Optional[T]:
-        return OrmRead.get_by_id(conn, self.__class__, id)
+    def get_by_id(self: T, conn: Connection, id_value: int) -> Optional[T]:
+        return OrmRead.get_by_id(conn, self.__class__, id_value)
 
     def get_first(self: T, conn: Connection, select_statement: str, params: dict) -> Optional[T]:
         return OrmRead.get_first(conn, self.__class__, select_statement, params)
