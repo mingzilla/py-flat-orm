@@ -14,30 +14,25 @@ class OrmRead:
 
     @staticmethod
     def list_all(conn: Connection, cls: Type[OrmDomain]) -> List[OrmDomain]:
-        domain = cls()
-        query = text(f"SELECT * FROM {domain.table_name()}")
-
-        def create_domain_fn(props: dict):
-            return DomainUtil.merge_fields(cls(), props)
-
-        return OrmRead.list_and_merge(conn, domain.resolve_mappings(), query, create_domain_fn)
+        select_statement = f"SELECT * FROM {cls().table_name()}"
+        return OrmRead.list(conn, cls, select_statement, {})
 
     @staticmethod
-    def list(conn: Connection, cls: Type[OrmDomain], select_statement: str, set_params_fn: Callable[[str], str]) -> List[OrmDomain]:
+    def list(conn: Connection, cls: Type[OrmDomain], select_statement: str, params: dict) -> List[OrmDomain]:
         domain = cls()
         query = text(f"{select_statement}")
 
         def create_domain_fn(props: dict):
             return DomainUtil.merge_fields(cls(), props)
 
-        return OrmRead.list_and_merge(conn, domain.resolve_mappings(), query, create_domain_fn)
+        return OrmRead.list_and_merge(conn, domain.resolve_mappings(), query, params, create_domain_fn)
 
     @staticmethod
-    def list_and_merge(conn: Connection, db_domain_field_mappings: List[OrmMapping], query: TextClause, create_domain_fn: Callable[[dict], OrmDomain]) -> List[OrmDomain]:
+    def list_and_merge(conn: Connection, db_domain_field_mappings: List[OrmMapping], query: TextClause, params: dict, create_domain_fn: Callable[[dict], OrmDomain]) -> List[OrmDomain]:
         objs = []
 
         try:
-            statement = conn.execute(query)
+            statement = conn.execute(query, params)
             for row in statement:
                 obj = OrmMapping.to_domain(db_domain_field_mappings, row, create_domain_fn)
                 objs.append(obj)
