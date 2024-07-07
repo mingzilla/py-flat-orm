@@ -1,25 +1,20 @@
 from typing import List
 
-from py_flat_orm.domain.definition.orm_domain import OrmDomain
+from py_flat_orm.domain.definition.abstract_orm_domain import AbstractOrmDomain
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping
 from py_flat_orm.domain.definition.orm_validate import OrmValidate
 from py_flat_orm.domain.validation.orm_constraint import OrmConstraint
 from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 
 
-class OrmValidateTestDomainPerson(OrmDomain):
+class OrmValidateTestDomainPerson(AbstractOrmDomain):
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.id: int = kwargs.get('id')
         self.name: str = kwargs.get('name')
         self.age: int = kwargs.get('age')
         self.gender: str = kwargs.get('gender')
         self.born_month: int = kwargs.get('born_month')
-
-    def get_id(self) -> int:
-        return self['id']
-
-    def set_id(self, id: int) -> None:
-        self['id'] = id
 
     def resolve_mappings(self) -> List[OrmMapping]:
         return OrmMapping.map_domain(OrmValidateTestDomainPerson, [])

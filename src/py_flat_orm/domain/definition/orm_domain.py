@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod  # type: ignore
 from typing import List
 
 from py_flat_orm.domain.definition.orm_mapping import OrmMapping

@@ -17,9 +17,8 @@ class InFn:
 
     @staticmethod
     def as_boolean(obj: Any) -> Optional[bool]:
-        if obj is None:
-            return None
-        return InFn.as_string(obj).strip().lower() == 'true'
+        if obj is None: return None
+        return InFn.as_string(obj).strip().lower() == 'true'  # type: ignore
 
     @staticmethod
     def as_decimal(obj: Any) -> Optional[Decimal]:
@@ -131,7 +130,7 @@ class InFn:
             return False
 
     @staticmethod
-    def get_enum_keys(a_class: type, custom_exclude_fields: List[str] = None) -> List[str]:
+    def get_enum_keys(a_class: type, custom_exclude_fields: List[str] = []) -> List[str]:
         excludes = (custom_exclude_fields or []) + ['__class__', '__doc__', '__module__', '__weakref__', '__members__', '__name__', '__qualname__']
         return [prop for prop in dir(a_class) if prop not in excludes and not callable(getattr(a_class, prop))]
 
