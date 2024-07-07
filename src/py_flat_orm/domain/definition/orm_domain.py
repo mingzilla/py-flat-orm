@@ -33,4 +33,4 @@ class OrmDomain(ABC):
 
     @staticmethod
     def to_params(domain: 'OrmDomain', non_id_mappings: List['OrmMapping']) -> dict:
-        return {m.db_field_name: InFn.prop(m.camel_field_name, domain) for m in non_id_mappings}
+        return {m.db_field_name: InFn.prop(m.domain_field_name, domain) for m in non_id_mappings}

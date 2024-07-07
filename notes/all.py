@@ -1,11 +1,7 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from typing import List, Any, Dict
-from datetime import datetime
-from in_fn import InFn
-from id_gen import IdGen
-from domain_util import DomainUtil
+
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
@@ -26,13 +22,13 @@ class OrmDomain:
         pass
 
 class OrmMapping:
-    def __init__(self, camel_field_name: str, db_field_name: str):
-        self.camel_field_name = camel_field_name
+    def __init__(self, domain_field_name: str, db_field_name: str):
+        self.domain_field_name = domain_field_name
         self.db_field_name = db_field_name.lower()
 
     @staticmethod
-    def create(camel_field_name: str, db_field_name: str) -> 'OrmMapping':
-        return OrmMapping(camel_field_name, db_field_name)
+    def create(domain_field_name: str, db_field_name: str) -> 'OrmMapping':
+        return OrmMapping(domain_field_name, db_field_name)
 
     @staticmethod
     def map_domain(a_class: type, custom_mapping: List['OrmMapping'] = None) -> List['OrmMapping']:
@@ -49,15 +45,15 @@ class OrmMapping:
     @staticmethod
     def to_domain(db_domain_field_mappings: List['OrmMapping'], result_set: Dict[str, Any], create_domain_fn):
         props = {
-            mapping.camel_field_name: InFn.safe_get(None, lambda: result_set[mapping.db_field_name])
+            mapping.domain_field_name: InFn.safe_get(None, lambda: result_set[mapping.db_field_name])
             for mapping in db_domain_field_mappings
         }
         return create_domain_fn(props)
 
     @staticmethod
     def split_id_and_non_id_mappings(mappings: List['OrmMapping']) -> List[List['OrmMapping']]:
-        id_mapping = next((m for m in mappings if m.camel_field_name.lower() == 'id'), None)
-        non_id_mappings = [m for m in mappings if m.camel_field_name != id_mapping.camel_field_name]
+        id_mapping = next((m for m in mappings if m.domain_field_name.lower() == 'id'), None)
+        non_id_mappings = [m for m in mappings if m.domain_field_name != id_mapping.domain_field_name]
         return [[id_mapping], non_id_mappings]
 
     @staticmethod
@@ -203,14 +199,9 @@ class OrmRead:
     def get_first(session, a_class: type, select_statement: str) -> Any:
         return session.query(a_class).filter(select_statement).first()
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, Float, BigDecimal
+
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from typing import List, Any, Dict, TypeVar
-from datetime import datetime
-from in_fn import InFn
-from id_gen import IdGen
-from domain_util import DomainUtil
+from typing import List, Any, Dict
 
 Base = declarative_base()
 
@@ -289,20 +280,20 @@ class OrmWrite:
     def set_statement_params(statement, domain: OrmDomain, non_id_mappings: List[OrmMapping]):
         for index, mapping in enumerate(non_id_mappings):
             one_based_position = index + 1
-            type_ = InFn.get_type(domain.__class__, mapping.camel_field_name)
-            value = getattr(domain, mapping.camel_field_name)
+            type_ = InFn.get_type(domain.__class__, mapping.domain_field_name)
+            value = getattr(domain, mapping.domain_field_name)
             if type_ == bool:
-                statement = statement.bindparams(one_based_position, InFn.prop_as_boolean(mapping.camel_field_name, domain))
+                statement = statement.bindparams(one_based_position, InFn.prop_as_boolean(mapping.domain_field_name, domain))
             elif type_ == BigDecimal:
-                statement = statement.bindparams(one_based_position, InFn.prop_as_big_decimal(mapping.camel_field_name, domain))
+                statement = statement.bindparams(one_based_position, InFn.prop_as_big_decimal(mapping.domain_field_name, domain))
             elif type_ == Date:
-                statement = statement.bindparams(one_based_position, InFn.prop_as_date(mapping.camel_field_name, domain))
+                statement = statement.bindparams(one_based_position, InFn.prop_as_date(mapping.domain_field_name, domain))
             elif type_ == float:
-                statement = statement.bindparams(one_based_position, InFn.prop_as_float(mapping.camel_field_name, domain))
+                statement = statement.bindparams(one_based_position, InFn.prop_as_float(mapping.domain_field_name, domain))
             elif type_ == int:
-                statement = statement.bindparams(one_based_position, InFn.prop_as_integer(mapping.camel_field_name, domain))
+                statement = statement.bindparams(one_based_position, InFn.prop_as_integer(mapping.domain_field_name, domain))
             elif type_ == str:
-                statement = statement.bindparams(one_based_position, InFn.prop_as_string(mapping.camel_field_name, domain))
+                statement = statement.bindparams(one_based_position, InFn.prop_as_string(mapping.domain_field_name, domain))
         return statement
 
     @staticmethod
@@ -405,14 +396,9 @@ class OrmConstraintType(Enum):
 
 
 from typing import List, Optional, Any
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean, Date, Float, BigDecimal
+from sqlalchemy import Date, BigDecimal
 from in_fn import InFn
-from id_gen import IdGen
-from domain_util import DomainUtil
-from datetime import datetime
 
 Base = declarative_base()
 
@@ -465,8 +451,7 @@ class OrmConstraint:
 
 
 import unittest
-from my_person import MyPerson
-from orm_error_collector import OrmErrorCollector
+
 
 class TestMyPerson(unittest.TestCase):
 
@@ -592,8 +577,7 @@ if __name__ == '__main__':
 
 import unittest
 from orm_mapping import OrmMapping
-from my_person import MyPerson
-from unittest.mock import Mock
+
 
 class TestOrmMapping(unittest.TestCase):
 
@@ -604,10 +588,10 @@ class TestOrmMapping(unittest.TestCase):
         ])
 
         # Then
-        camel_field_names = [item.camel_field_name for item in items]
+        domain_field_names = [item.domain_field_name for item in items]
         db_field_names = [item.db_field_name for item in items]
-        self.assertIn('id', camel_field_names)
-        self.assertIn('name', camel_field_names)
+        self.assertIn('id', domain_field_names)
+        self.assertIn('name', domain_field_names)
         self.assertIn('SERIAL', db_field_names)
         self.assertIn('NAME', db_field_names)
 
@@ -618,10 +602,10 @@ class TestOrmMapping(unittest.TestCase):
             ("address", "ADDRESS")
         ]
 
-        for camel_field_name, db_field_name in test_cases:
-            with self.subTest(camel_field_name=camel_field_name, db_field_name=db_field_name):
-                orm_mapping = OrmMapping.create(camel_field_name, db_field_name)
-                self.assertEqual(orm_mapping.camel_field_name, camel_field_name)
+        for domain_field_name, db_field_name in test_cases:
+            with self.subTest(domain_field_name=domain_field_name, db_field_name=db_field_name):
+                orm_mapping = OrmMapping.create(domain_field_name, db_field_name)
+                self.assertEqual(orm_mapping.domain_field_name, domain_field_name)
                 self.assertEqual(orm_mapping.db_field_name, db_field_name)
 
     def test_map_domain_with_default_mappings(self):
@@ -637,11 +621,11 @@ class TestOrmMapping(unittest.TestCase):
 
         # Then
         self.assertEqual(len(mappings), len(expected_mappings))
-        camel_field_names = [item.camel_field_name for item in mappings]
+        domain_field_names = [item.domain_field_name for item in mappings]
         db_field_names = [item.db_field_name for item in mappings]
-        expected_camel_field_names = [item.camel_field_name for item in expected_mappings]
+        expected_domain_field_names = [item.domain_field_name for item in expected_mappings]
         expected_db_field_names = [item.db_field_name for item in expected_mappings]
-        self.assertTrue(all(name in camel_field_names for name in expected_camel_field_names))
+        self.assertTrue(all(name in domain_field_names for name in expected_domain_field_names))
         self.assertTrue(all(name in db_field_names for name in expected_db_field_names))
 
     def test_map_domain_with_custom_mappings(self):
@@ -658,11 +642,11 @@ class TestOrmMapping(unittest.TestCase):
 
         # Then
         self.assertEqual(len(mappings), len(expected_mappings))
-        camel_field_names = [item.camel_field_name for item in mappings]
+        domain_field_names = [item.domain_field_name for item in mappings]
         db_field_names = [item.db_field_name for item in mappings]
-        expected_camel_field_names = [item.camel_field_name for item in expected_mappings]
+        expected_domain_field_names = [item.domain_field_name for item in expected_mappings]
         expected_db_field_names = [item.db_field_name for item in expected_mappings]
-        self.assertTrue(all(name in camel_field_names for name in expected_camel_field_names))
+        self.assertTrue(all(name in domain_field_names for name in expected_domain_field_names))
         self.assertTrue(all(name in db_field_names for name in expected_db_field_names))
 
     def test_to_domain_method(self):
@@ -699,11 +683,7 @@ if __name__ == '__main__':
 
 
 import unittest
-from unittest.mock import Mock, MagicMock
-from orm_write import OrmWrite
-from my_person import MyPerson
-from orm_error_collector import OrmErrorCollector
-from orm_domain import OrmDomain
+
 
 class TestOrmWrite(unittest.TestCase):
 
@@ -757,10 +737,7 @@ if __name__ == '__main__':
 
 import unittest
 from unittest.mock import Mock, patch
-from repo_db import RepoDb
-from orm_actor import OrmActor
-from orm_read import OrmRead
-from my_person import MyPerson
+
 
 class TestRepoDb(unittest.TestCase):
 

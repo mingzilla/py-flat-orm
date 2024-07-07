@@ -18,9 +18,9 @@ class OrmMappingTest(unittest.TestCase):
 
         self.assertEqual(len(mappings), len(expected_mappings))
 
-        expected_camel_field_names = [expected_mapping.camel_field_name for expected_mapping in expected_mappings]
-        actual_camel_field_names = [mapping.camel_field_name for mapping in mappings]
-        self.assertEqual(set(expected_camel_field_names), set(actual_camel_field_names))
+        expected_domain_field_names = [expected_mapping.domain_field_name for expected_mapping in expected_mappings]
+        actual_domain_field_names = [mapping.domain_field_name for mapping in mappings]
+        self.assertEqual(set(expected_domain_field_names), set(actual_domain_field_names))
 
         expected_db_field_names = [expected_mapping.db_field_name for expected_mapping in expected_mappings]
         actual_db_field_names = [mapping.db_field_name for mapping in mappings]
@@ -37,9 +37,9 @@ class OrmMappingTest(unittest.TestCase):
 
         self.assertEqual(len(mappings), len(expected_mappings))
 
-        expected_camel_field_names = [expected_mapping.camel_field_name for expected_mapping in expected_mappings]
-        actual_camel_field_names = [mapping.camel_field_name for mapping in mappings]
-        self.assertEqual(set(expected_camel_field_names), set(actual_camel_field_names))
+        expected_domain_field_names = [expected_mapping.domain_field_name for expected_mapping in expected_mappings]
+        actual_domain_field_names = [mapping.domain_field_name for mapping in mappings]
+        self.assertEqual(set(expected_domain_field_names), set(actual_domain_field_names))
 
         expected_db_field_names = [expected_mapping.db_field_name for expected_mapping in expected_mappings]
         actual_db_field_names = [mapping.db_field_name for mapping in mappings]
@@ -54,9 +54,9 @@ class OrmMappingTest(unittest.TestCase):
         id_mappings, non_id_mappings = OrmMapping.split_id_and_non_id_mappings(mappings)
 
         self.assertEqual(len(id_mappings), 1)
-        self.assertEqual(id_mappings[0].camel_field_name, 'id')
+        self.assertEqual(id_mappings[0].domain_field_name, 'id')
         self.assertEqual(len(non_id_mappings), 2)
-        self.assertTrue(all(mapping.camel_field_name != 'id' for mapping in non_id_mappings))
+        self.assertTrue(all(mapping.domain_field_name != 'id' for mapping in non_id_mappings))
 
     def test_split_id_and_non_id_mappings_without_id(self):
         mappings = [
@@ -79,9 +79,9 @@ class OrmMappingTest(unittest.TestCase):
         id_mappings, non_id_mappings = OrmMapping.split_id_and_non_id_mappings(mappings)
 
         self.assertEqual(len(id_mappings), 1)
-        self.assertEqual(id_mappings[0].camel_field_name, 'id')
+        self.assertEqual(id_mappings[0].domain_field_name, 'id')
         self.assertEqual(len(non_id_mappings), 3)
-        self.assertTrue(all(mapping.camel_field_name != 'id' for mapping in non_id_mappings))
+        self.assertTrue(all(mapping.domain_field_name != 'id' for mapping in non_id_mappings))
 
 
 if __name__ == '__main__':

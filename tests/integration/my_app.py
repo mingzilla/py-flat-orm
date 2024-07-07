@@ -24,6 +24,8 @@ class MyApp:
 
     @staticmethod
     def run_without_tx1(conn: Connection):
+        people1 = OrmRead.list_all(conn, MyPerson)
+        logger.info(', '.join([p.name for p in people1]))
         logger.info(OrmRead.count(conn, MyPerson))
         id_gen = IdGen.create()
         p = MyPerson(id=id_gen.get_int(), name='Andrew')
