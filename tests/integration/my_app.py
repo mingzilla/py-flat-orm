@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, date
 
 from sqlalchemy import text, Connection
 
@@ -7,6 +8,7 @@ from py_flat_orm.domain.orm_read import OrmRead
 from py_flat_orm.domain.orm_write import OrmWrite
 from py_flat_orm.domain.validation.orm_error_collector import OrmErrorCollector
 from py_flat_orm.util.base_util.id_gen import IdGen
+from test_data.integration.employee import Employee
 from test_data.integration.my_person import MyPerson
 from test_data.integration.repo_db import RepoDb
 
@@ -24,13 +26,13 @@ class MyApp:
 
     @staticmethod
     def run_without_tx1(conn: Connection):
-        people1 = OrmRead.list_all(conn, MyPerson)
+        people1 = OrmRead.list_all(conn, Employee)
         logger.info(', '.join([p.name for p in people1]))
-        logger.info(OrmRead.count(conn, MyPerson))
+        logger.info(OrmRead.count(conn, Employee))
         id_gen = IdGen.create()
-        p = MyPerson(id=id_gen.get_int(), name='Andrew')
+        p = Employee(id=id_gen.get_int(), name='Andrew', age=40, salary=50000.2, birth_date=date(1984, 6, 19), created_at=datetime.now(), is_active=True)
         collector = OrmWrite.validate_and_save(conn, p)
-        logger.info(collector)
+        logger.info(collector.has_errors())
         logger.info(p.id)
 
     @staticmethod
