@@ -53,7 +53,7 @@ This project is set up using `hatch`.
 ### Static Analysis
 * add dependency `mypy`
 * each package needs to add an empty `py.typed` file to make pycharm happy
-* so each package has `__init__.py` and `py.typed`, seems pointless, just live with them
+* so each package has `__init__.py` and `py.typed`, seems pointless, just live with it
 
 ### Publish
 * `hatch build`
