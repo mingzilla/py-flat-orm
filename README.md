@@ -28,16 +28,22 @@ This project is set up using `hatch`.
 ## Project Creation - IMPORTANT
 - pyproject.toml - has to define `[tool.hatch.envs.py_flat_orm]` to match the name of the env you want to create
 - env creation - `hatch env create py_flat_orm`, has to match `pyproject.toml` definition
+- `path = ".venv"` - important - make the directory local
+- `paths = ["src"]` - mark as root
 
 ```json
 [tool.hatch.envs.py_flat_orm]
 python = "3.9"
+path = ".venv"
+paths = ["src"]
 dependencies = [
     "numpy>=1.21.0,<2.0.0",
-    "pydash",
-    "pandas",
-    "sqlalchemy",
-    "pymysql",
+]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+    "pytest-cov",
 ]
 ```
 
