@@ -37,7 +37,15 @@ dependencies = [
     "pandas",
     "sqlalchemy",
     "pymysql",
+    "pytest",
+    "pytest-cov",
 ]
+
+[tool.hatch.envs.py_flat_orm.scripts]
+# hatch run test
+test = "pytest {args:tests}"
+# hatch run test-cov
+test-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=py_flat_orm --cov=tests {args:tests}"
 
 [project.optional-dependencies]
 dev = [
@@ -46,18 +54,6 @@ dev = [
     "flake8",
     "black",
 ]
-
-[tool.hatch.envs.default]
-dependencies = [
-    "pytest",
-    "pytest-cov",
-]
-
-[tool.hatch.envs.default.scripts]
-# hatch run test
-test = "pytest {args:tests}"
-# hatch run test-cov
-test-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=py_flat_orm --cov=tests {args:tests}"
 
 
 [project.urls]

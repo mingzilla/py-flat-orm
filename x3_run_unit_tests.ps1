@@ -1,3 +1,3 @@
-hatch run test-cov
-# hatch test
-# hatch run test
+hatch run py_flat_orm:test-cov
+# hatch py_flat_orm:test
+# hatch run py_flat_orm:test

@@ -51,6 +51,9 @@ dependencies = [
 hatch env remove py_flat_orm
 hatch env create py_flat_orm
 hatch shell py_flat_orm
+
+# `py_flat_orm:` is needed for specific env
+hatch run py_flat_orm:test-cov
 ```
 
 ### Initialisation
