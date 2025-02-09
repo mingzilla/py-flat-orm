@@ -25,7 +25,27 @@ This project is set up using `hatch`.
 * `x1` means execution, and generally the 1st thing to run
 * run `hatch -h` 
 
-## Project Creation
+## Project Creation - IMPORTANT
+- pyproject.toml - has to define `[tool.hatch.envs.py_flat_orm]` to match the name of the env you want to create
+- env creation - `hatch env create py_flat_orm`, has to match `pyproject.toml` definition
+
+```json
+[tool.hatch.envs.py_flat_orm]
+python = "3.9"
+dependencies = [
+    "numpy>=1.21.0,<2.0.0",
+    "pydash",
+    "pandas",
+    "sqlalchemy",
+    "pymysql",
+]
+```
+
+```shell
+hatch env remove py_flat_orm
+hatch env create py_flat_orm
+hatch shell py_flat_orm
+```
 
 ### Initialisation
 * This project is generated using `hatch new py-flat-orm`

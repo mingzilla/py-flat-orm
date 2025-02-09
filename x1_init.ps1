@@ -1,4 +1,4 @@
-hatch env remove
-hatch env create
-hatch shell py-flat-orm
+hatch env remove py_flat_orm
+hatch env create py_flat_orm
+hatch shell py_flat_orm
 echo $Env:PYTHONPATH

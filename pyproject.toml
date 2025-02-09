@@ -22,10 +22,13 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+
 # Non-generated definition
 version = "0.2.0"
 description = "A sample project for ORM"
 
+[tool.hatch.envs.py_flat_orm]
+python = "3.9"
 dependencies = [
     "numpy>=1.21.0,<2.0.0",
     "pydash",
