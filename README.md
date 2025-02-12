@@ -31,11 +31,11 @@ This project is set up using `hatch`.
 - `path = ".venv"` - important - make the directory local
 - `paths = ["src"]` - mark as root
 
-```json
+```ini
 [tool.hatch.envs.py_flat_orm]
 python = "3.9"
 path = ".venv"
-paths = ["src"]
+paths = [] # should not put "src" here, it would mess up auto import
 dependencies = [
     "numpy>=1.21.0,<2.0.0",
 ]

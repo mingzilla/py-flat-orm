@@ -30,7 +30,7 @@ description = "A sample project for ORM"
 [tool.hatch.envs.py_flat_orm]
 python = "3.9"
 path = ".venv"
-paths = ["src"]
+paths = [] # should not put "src" here, it would mess up auto import
 dependencies = [
     "numpy>=1.21.0,<2.0.0",
     "pydash",
