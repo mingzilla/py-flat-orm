@@ -24,7 +24,7 @@ classifiers = [
 ]
 
 # Non-generated definition
-version = "0.2.0"
+version = "0.3.0"
 description = "A sample project for ORM"
 
 [tool.hatch.envs.py_flat_orm]
